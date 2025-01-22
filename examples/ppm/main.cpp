@@ -1,4 +1,5 @@
 #include "image.hpp"
+#include <iostream>
 
 int main()
 {
@@ -12,5 +13,5 @@ int main()
             rgb.Green = (f32)y / (f32)(image.Height - 1);
         }
     }
-    WriteFloatImageToPPM(image);
+    WriteFloatImageToPPM(std::cout, image);
 }

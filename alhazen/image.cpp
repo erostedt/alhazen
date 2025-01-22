@@ -1,5 +1,5 @@
 #include "image.hpp"
-#include <iostream>
+#include <algorithm>
 
 FloatImage AllocateFloatImage(u32 width, u32 height)
 {
@@ -18,21 +18,20 @@ void FreeImage(FloatImage *image)
     image->Height = 0;
 }
 
-void WriteFloatImageToPPM(FloatImage image)
+void WriteFloatImageToPPM(std::ostream &dst, FloatImage image)
 {
-    std::cout << "P3\n" << image.Width << ' ' << image.Height << "\n255\n";
-
+    dst << "P3\n" << image.Width << ' ' << image.Height << "\n255\n";
     for (u32 y = 0; y < image.Height; ++y)
     {
         for (u32 x = 0; x < image.Width; ++x)
         {
             const RGB &rgb = image[x, y];
 
-            int ir = int(255.999f * rgb.Red);
-            int ig = int(255.999f * rgb.Green);
-            int ib = int(255.999f * rgb.Blue);
+            i32 r = std::clamp(i32(255.999f * rgb.Red), 0, 255);
+            i32 g = std::clamp(i32(255.999f * rgb.Green), 0, 255);
+            i32 b = std::clamp(i32(255.999f * rgb.Blue), 0, 255);
 
-            std::cout << ir << ' ' << ig << ' ' << ib << '\n';
+            dst << r << ' ' << g << ' ' << b << '\n';
         }
     }
 }

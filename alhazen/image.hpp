@@ -1,9 +1,8 @@
-#include <cstdint>
+#pragma once
 
-using u8 = uint8_t;
-using u32 = uint32_t;
+#include <ostream>
 
-using f32 = float;
+#include "types.hpp"
 
 struct RGB
 {
@@ -26,4 +25,4 @@ struct FloatImage
 
 FloatImage AllocateFloatImage(u32 width, u32 height);
 void FreeFloatImage(FloatImage *image);
-void WriteFloatImageToPPM(FloatImage image);
+void WriteFloatImageToPPM(std::ostream &dst, FloatImage image);
