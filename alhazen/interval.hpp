@@ -8,3 +8,5 @@ struct Interval
     f32 UpperBound;
     bool Contains(f32 x) const;
 };
+
+Interval ZeroToInfinity();
