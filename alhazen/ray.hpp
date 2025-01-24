@@ -1,13 +1,12 @@
 #pragma once
 
+#include "point3.hpp"
+#include "types.hpp"
 #include "vec3.hpp"
 
 struct Ray
 {
-    Vec3 Origin;
+    Point3 Origin;
     Vec3 Direction;
-    Vec3 At(float t) const
-    {
-        return Origin + t * Direction;
-    }
+    Point3 At(f32 t) const;
 };

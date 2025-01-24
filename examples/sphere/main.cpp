@@ -3,17 +3,24 @@
 
 #include "color.hpp"
 #include "image.hpp"
+#include "point3.hpp"
 #include "ray.hpp"
 #include "vec3.hpp"
 
 #define internal static
 
-internal f32 HitSphere(const Vec3 &center, f32 radius, const Ray &r)
+struct Sphere
 {
-    Vec3 oc = center - r.Origin;
+    Point3 Center;
+    f32 Radius;
+};
+
+internal f32 HitSphere(Sphere sphere, const Ray &r)
+{
+    Vec3 oc = sphere.Center - r.Origin;
     f32 a = SquaredLength(r.Direction);
     f32 h = Dot(r.Direction, oc);
-    f32 c = SquaredLength(oc) - radius * radius;
+    f32 c = SquaredLength(oc) - sphere.Radius * sphere.Radius;
     auto discriminant = h * h - a * c;
     if (discriminant < 0.0f)
     {
@@ -29,12 +36,11 @@ internal Color Vec3ToColor(Vec3 v)
 
 internal Color RayColor(const Ray &r)
 {
-    Vec3 sphere_center = {0, 0, -1};
-    f32 radius = 0.5f;
-    f32 distance = HitSphere(sphere_center, radius, r);
+    Sphere sphere = {{0, 0, -1}, 0.5f};
+    f32 distance = HitSphere(sphere, r);
     if (distance >= 0.0f)
     {
-        Vec3 normal = r.At(distance) - sphere_center;
+        Vec3 normal = r.At(distance) - sphere.Center;
         return Vec3ToColor(0.5f * (normal + 1.0f));
     }
 
@@ -48,33 +54,37 @@ internal Color RayColor(const Ray &r)
 
 int main()
 {
-    constexpr f32 ideal_aspect_ratio = 16.0f / 9.0f;
+    f32 ideal_aspect_ratio = 16.0f / 9.0f;
     u32 image_width = 400;
     u32 image_height = (u32)((f32)image_width / ideal_aspect_ratio);
     image_height = (image_height < 1) ? 1 : image_height;
 
     f32 actual_aspect_ratio = (f32)image_width / (f32)image_height;
 
+    Vec3 forward = {0.0f, 0.0f, -1.0f};
+
     f32 focal_length = 1.0f;
     f32 viewport_height = 2.0f;
     f32 viewport_width = viewport_height * actual_aspect_ratio;
 
-    const Vec3 camera_center = {};
-    const Vec3 viewport_u = {viewport_width, 0.0f, 0.0f};
-    const Vec3 viewport_v = {0.0f, -viewport_height, 0.0f};
+    Point3 camera_center = {};
+    Vec3 viewport_u = {viewport_width, 0.0f, 0.0f};
+    Vec3 viewport_v = {0.0f, -viewport_height, 0.0f};
 
-    const Vec3 pixel_delta_u = viewport_u / (f32)image_width;
-    const Vec3 pixel_delta_v = viewport_v / (f32)image_height;
+    Vec3 pixel_delta_u = viewport_u / (f32)image_width;
+    Vec3 pixel_delta_v = viewport_v / (f32)image_height;
 
-    const Vec3 viewport_upper_left = camera_center - Vec3{0, 0, focal_length} - viewport_u / 2 - viewport_v / 2;
-    const Vec3 pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
+    Point3 viewport_center = camera_center + focal_length * forward;
+
+    Point3 viewport_upper_left = viewport_center - viewport_u / 2 - viewport_v / 2;
+    Point3 pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
 
     FloatImage image = AllocateFloatImage(image_width, image_height);
     for (u32 y = 0; y < image.Height; ++y)
     {
         for (u32 x = 0; x < image.Width; ++x)
         {
-            const Vec3 pixel_center = pixel00_loc + ((f32)x * pixel_delta_u) + ((f32)y * pixel_delta_v);
+            const Point3 pixel_center = pixel00_loc + ((f32)x * pixel_delta_u) + ((f32)y * pixel_delta_v);
             const Vec3 ray_direction = pixel_center - camera_center;
             Ray ray = {camera_center, ray_direction};
             image[x, y] = RayColor(ray);
