@@ -11,15 +11,15 @@
 internal f32 HitSphere(const Vec3 &center, f32 radius, const Ray &r)
 {
     Vec3 oc = center - r.Origin;
-    f32 a = Dot(r.Direction, r.Direction);
-    f32 b = -2.0f * Dot(r.Direction, oc);
-    f32 c = Dot(oc, oc) - radius * radius;
-    auto discriminant = b * b - 4 * a * c;
+    f32 a = SquaredLength(r.Direction);
+    f32 h = Dot(r.Direction, oc);
+    f32 c = SquaredLength(oc) - radius * radius;
+    auto discriminant = h * h - a * c;
     if (discriminant < 0.0f)
     {
         return -1.0f;
     }
-    return (-b - std::sqrt(discriminant)) / (2.0f * a);
+    return (h - std::sqrt(discriminant)) / a;
 }
 
 internal Color Vec3ToColor(Vec3 v)
