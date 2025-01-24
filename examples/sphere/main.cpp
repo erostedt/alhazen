@@ -1,7 +1,10 @@
 #include <cmath>
 #include <iostream>
+#include <limits>
+#include <vector>
 
 #include "color.hpp"
+#include "hit_payload.hpp"
 #include "image.hpp"
 #include "interval.hpp"
 #include "point3.hpp"
@@ -45,6 +48,34 @@ internal f32 HitSphere(Sphere sphere, Ray r, Interval interval)
     return miss;
 }
 
+internal HitPayload TraceRay(const std::vector<Sphere> &world, const Ray &r, Interval interval)
+{
+    i32 closest_object_index = -1;
+    f32 closest_hit = std::numeric_limits<f32>::max();
+    for (size_t i = 0; i < world.size(); ++i)
+    {
+        f32 hit = HitSphere(world[i], r, interval);
+        if (interval.Contains(hit) && hit < closest_hit)
+        {
+            closest_object_index = (i32)i;
+            closest_hit = hit;
+        }
+    }
+
+    HitPayload payload;
+    if (closest_object_index < 0)
+    {
+        payload.ObjectIndex = -1;
+        return payload;
+    }
+
+    payload.Distance = closest_hit;
+    payload.ObjectIndex = closest_object_index;
+    payload.Position = r.At(closest_hit);
+    payload.Normal = payload.Position - world[(size_t)payload.ObjectIndex].Center;
+    return payload;
+}
+
 internal Color Vec3ToColor(Vec3 v)
 {
     return {v.X, v.Y, v.Z};
@@ -52,13 +83,13 @@ internal Color Vec3ToColor(Vec3 v)
 
 internal Color RayColor(const Ray &r)
 {
-    Sphere sphere = {{0, 0, -1}, 0.5f};
+    std::vector<Sphere> spheres{Sphere{{0, 0, -1}, 0.5f}};
+
     Interval interval = {0.0f, 100.0f};
-    f32 distance = HitSphere(sphere, r, interval);
-    if (distance >= 0.0f)
+    const HitPayload payload = TraceRay(spheres, r, interval);
+    if (payload.ObjectIndex >= 0)
     {
-        Vec3 normal = r.At(distance) - sphere.Center;
-        return Vec3ToColor(0.5f * (normal + 1.0f));
+        return Vec3ToColor(0.5f * (payload.Normal + 1.0f));
     }
 
     Vec3 v = Normalized(r.Direction);
