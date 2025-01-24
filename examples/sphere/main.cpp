@@ -30,8 +30,19 @@ internal f32 HitSphere(Sphere sphere, Ray r, Interval interval)
         return miss;
     }
 
-    f32 hit_distance = (h - std::sqrt(discriminant)) / a;
-    return interval.Contains(hit_distance) ? hit_distance : miss;
+    f32 closest_hit = (h - std::sqrt(discriminant)) / a;
+    if (interval.Contains(closest_hit))
+    {
+        return closest_hit;
+    }
+
+    f32 further_hit = (h + std::sqrt(discriminant)) / a;
+    if (interval.Contains(further_hit))
+    {
+        return further_hit;
+    }
+
+    return miss;
 }
 
 internal Color Vec3ToColor(Vec3 v)
