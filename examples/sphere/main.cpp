@@ -69,10 +69,12 @@ internal HitPayload TraceRay(const std::vector<Sphere> &world, const Ray &r, Int
         return payload;
     }
 
+    Sphere sphere = world[(size_t)closest_object_index];
+
     payload.Distance = closest_hit;
     payload.ObjectIndex = closest_object_index;
     payload.Position = r.At(closest_hit);
-    payload.Normal = payload.Position - world[(size_t)payload.ObjectIndex].Center;
+    payload.Normal = (payload.Position - sphere.Center) / sphere.Radius;
     return payload;
 }
 
