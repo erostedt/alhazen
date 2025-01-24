@@ -34,13 +34,13 @@ internal f32 HitSphere(Sphere sphere, Ray r, Interval interval)
     }
 
     f32 closest_hit = (h - std::sqrt(discriminant)) / a;
-    if (interval.Contains(closest_hit))
+    if (interval.Surrounds(closest_hit))
     {
         return closest_hit;
     }
 
     f32 further_hit = (h + std::sqrt(discriminant)) / a;
-    if (interval.Contains(further_hit))
+    if (interval.Surrounds(further_hit))
     {
         return further_hit;
     }
