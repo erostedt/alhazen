@@ -3,7 +3,7 @@
 
 int main()
 {
-    FloatImage image = AllocateFloatImage(320, 256);
+    FloatImage image = CreateFloatImage(320, 256);
     for (u32 y = 0; y < image.Height; ++y)
     {
         for (u32 x = 0; x < image.Width; ++x)

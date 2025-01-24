@@ -17,6 +17,6 @@ struct FloatImage
     }
 };
 
-FloatImage AllocateFloatImage(u32 width, u32 height);
+FloatImage CreateFloatImage(u32 width, u32 height);
 void FreeFloatImage(FloatImage *image);
 void WriteFloatImageToPPM(std::ostream &dst, FloatImage image);

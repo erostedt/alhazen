@@ -1,7 +1,7 @@
 #include "image.hpp"
 #include <algorithm>
 
-FloatImage AllocateFloatImage(u32 width, u32 height)
+FloatImage CreateFloatImage(u32 width, u32 height)
 {
     FloatImage image;
     image.Width = width;
