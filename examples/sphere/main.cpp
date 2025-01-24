@@ -85,9 +85,9 @@ internal Color Vec3ToColor(Vec3 v)
 
 internal Color RayColor(const Ray &r)
 {
-    std::vector<Sphere> spheres{Sphere{{0, 0, -1}, 0.5f}};
+    std::vector<Sphere> spheres{Sphere{{0, 0, -1}, 0.5f}, Sphere{{0, -100.5, -1}, 100.0f}};
 
-    Interval interval = {0.0f, 100.0f};
+    Interval interval = ZeroToInfinity();
     const HitPayload payload = TraceRay(spheres, r, interval);
     if (payload.ObjectIndex >= 0)
     {
