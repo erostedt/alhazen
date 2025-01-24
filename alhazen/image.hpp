@@ -2,22 +2,16 @@
 
 #include <ostream>
 
+#include "color.hpp"
 #include "types.hpp"
-
-struct RGB
-{
-    f32 Red;
-    f32 Green;
-    f32 Blue;
-};
 
 struct FloatImage
 {
     u32 Width;
     u32 Height;
-    RGB *Pixels;
+    Color *Pixels;
 
-    RGB &operator[](u32 x, u32 y)
+    Color &operator[](u32 x, u32 y)
     {
         return Pixels[y * Width + x];
     }

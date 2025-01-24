@@ -8,9 +8,9 @@ int main()
     {
         for (u32 x = 0; x < image.Width; ++x)
         {
-            auto &rgb = image[x, y];
-            rgb.Red = (f32)x / (f32)(image.Width - 1);
-            rgb.Green = (f32)y / (f32)(image.Height - 1);
+            Color &color = image[x, y];
+            color.Red = (f32)x / (f32)(image.Width - 1);
+            color.Green = (f32)y / (f32)(image.Height - 1);
         }
     }
     WriteFloatImageToPPM(std::cout, image);

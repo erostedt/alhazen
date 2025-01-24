@@ -6,7 +6,7 @@ FloatImage AllocateFloatImage(u32 width, u32 height)
     FloatImage image;
     image.Width = width;
     image.Height = height;
-    image.Pixels = new RGB[width * height]();
+    image.Pixels = new Color[width * height]();
     return image;
 }
 
@@ -25,7 +25,7 @@ void WriteFloatImageToPPM(std::ostream &dst, FloatImage image)
     {
         for (u32 x = 0; x < image.Width; ++x)
         {
-            const RGB &rgb = image[x, y];
+            const Color &rgb = image[x, y];
 
             i32 r = std::clamp(i32(255.999f * rgb.Red), 0, 255);
             i32 g = std::clamp(i32(255.999f * rgb.Green), 0, 255);
