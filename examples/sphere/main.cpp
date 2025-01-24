@@ -3,6 +3,7 @@
 
 #include "color.hpp"
 #include "image.hpp"
+#include "interval.hpp"
 #include "point3.hpp"
 #include "ray.hpp"
 #include "vec3.hpp"
@@ -15,18 +16,22 @@ struct Sphere
     f32 Radius;
 };
 
-internal f32 HitSphere(Sphere sphere, const Ray &r)
+internal f32 HitSphere(Sphere sphere, Ray r, Interval interval)
 {
     Vec3 oc = sphere.Center - r.Origin;
     f32 a = SquaredLength(r.Direction);
     f32 h = Dot(r.Direction, oc);
     f32 c = SquaredLength(oc) - sphere.Radius * sphere.Radius;
-    auto discriminant = h * h - a * c;
+    f32 discriminant = h * h - a * c;
+
+    f32 miss = -1.0f;
     if (discriminant < 0.0f)
     {
-        return -1.0f;
+        return miss;
     }
-    return (h - std::sqrt(discriminant)) / a;
+
+    f32 hit_distance = (h - std::sqrt(discriminant)) / a;
+    return interval.Contains(hit_distance) ? hit_distance : miss;
 }
 
 internal Color Vec3ToColor(Vec3 v)
@@ -37,7 +42,8 @@ internal Color Vec3ToColor(Vec3 v)
 internal Color RayColor(const Ray &r)
 {
     Sphere sphere = {{0, 0, -1}, 0.5f};
-    f32 distance = HitSphere(sphere, r);
+    Interval interval = {0.0f, 100.0f};
+    f32 distance = HitSphere(sphere, r, interval);
     if (distance >= 0.0f)
     {
         Vec3 normal = r.At(distance) - sphere.Center;
