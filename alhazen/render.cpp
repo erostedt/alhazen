@@ -7,6 +7,7 @@
 #include "random.hpp"
 #include "scene.hpp"
 #include "types.hpp"
+#include "vec3.hpp"
 
 f32 HitSphere(Sphere sphere, Ray r, Interval interval)
 {
@@ -72,13 +73,20 @@ Color Vec3ToColor(Vec3 v)
     return {v.X, v.Y, v.Z};
 }
 
-Color RayColor(const Ray &r, const Scene &scene)
+Color RayColor(const Ray &r, const Scene &scene, u32 max_bounces)
 {
+    if (max_bounces == 0)
+    {
+        return BLACK;
+    }
+
     Interval interval = ZeroToInfinity();
     const HitPayload payload = TraceRay(scene.spheres, r, interval);
     if (payload.ObjectIndex >= 0)
     {
-        return Vec3ToColor(0.5f * (payload.Normal + 1.0f));
+        Vec3 direction = RandomVectorOnHemisphere(payload.Normal);
+        Ray new_ray{payload.Position, direction};
+        return 0.5f * RayColor(new_ray, scene, max_bounces - 1);
     }
 
     Vec3 v = Normalized(r.Direction);
@@ -96,7 +104,7 @@ Vec3 SampleUnitSquare()
     return {x, y, 0.0f};
 }
 
-FloatImage RenderImage(const Camera &camera, const Scene &scene, u32 rays_per_pixel)
+FloatImage RenderImage(const Camera &camera, const Scene &scene, u32 rays_per_pixel, u32 max_bounces)
 {
     FloatImage image = CreateFloatImage(camera.ImageResolution.Width, camera.ImageResolution.Height);
     for (u32 y = 0; y < image.Height; ++y)
@@ -108,7 +116,7 @@ FloatImage RenderImage(const Camera &camera, const Scene &scene, u32 rays_per_pi
             {
                 Vec3 offset = SampleUnitSquare();
                 Ray ray = camera.GenerateRay((f32)x + offset.X, (f32)y + offset.Y);
-                c += RayColor(ray, scene);
+                c += RayColor(ray, scene, max_bounces);
             }
             image[x, y] = c / (f32)rays_per_pixel;
         }
