@@ -8,6 +8,7 @@
 #include "scene.hpp"
 #include "types.hpp"
 #include "vec3.hpp"
+#include <limits>
 
 f32 HitSphere(Sphere sphere, Ray r, Interval interval)
 {
@@ -23,13 +24,14 @@ f32 HitSphere(Sphere sphere, Ray r, Interval interval)
         return miss;
     }
 
-    f32 closest_hit = (h - std::sqrt(discriminant)) / a;
+    f32 square_root_of_discriminant = std::sqrt(discriminant);
+    f32 closest_hit = (h - square_root_of_discriminant) / a;
     if (interval.Surrounds(closest_hit))
     {
         return closest_hit;
     }
 
-    f32 further_hit = (h + std::sqrt(discriminant)) / a;
+    f32 further_hit = (h + square_root_of_discriminant) / a;
     if (interval.Surrounds(further_hit))
     {
         return further_hit;
@@ -45,7 +47,7 @@ HitPayload TraceRay(const std::vector<Sphere> &world, const Ray &r, Interval int
     for (size_t i = 0; i < world.size(); ++i)
     {
         f32 hit = HitSphere(world[i], r, interval);
-        if (interval.Contains(hit) && hit < closest_hit)
+        if (interval.Surrounds(hit) && hit < closest_hit)
         {
             closest_object_index = (i32)i;
             closest_hit = hit;
@@ -80,7 +82,7 @@ Color RayColor(const Ray &r, const Scene &scene, u32 max_bounces)
         return BLACK;
     }
 
-    Interval interval = ZeroToInfinity();
+    Interval interval = {0.001f, std::numeric_limits<f32>::infinity()};
     const HitPayload payload = TraceRay(scene.spheres, r, interval);
     if (payload.ObjectIndex >= 0)
     {
