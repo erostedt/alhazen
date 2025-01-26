@@ -1,8 +1,10 @@
 #include "render.hpp"
 #include "camera.hpp"
+#include "color.hpp"
 #include "hit_payload.hpp"
 #include "image.hpp"
 #include "interval.hpp"
+#include "random.hpp"
 #include "scene.hpp"
 #include "types.hpp"
 
@@ -87,15 +89,28 @@ Color RayColor(const Ray &r, const Scene &scene)
     return LinearBlend(light_blue, white, a);
 }
 
-FloatImage RenderImage(const Camera &camera, const Scene &scene)
+Vec3 SampleUnitSquare()
+{
+    f32 x = UniformF32(-0.5f, 0.5f);
+    f32 y = UniformF32(-0.5f, 0.5f);
+    return {x, y, 0.0f};
+}
+
+FloatImage RenderImage(const Camera &camera, const Scene &scene, u32 rays_per_pixel)
 {
     FloatImage image = CreateFloatImage(camera.ImageResolution.Width, camera.ImageResolution.Height);
     for (u32 y = 0; y < image.Height; ++y)
     {
         for (u32 x = 0; x < image.Width; ++x)
         {
-            Ray ray = camera.GenerateRay(x, y);
-            image[x, y] = RayColor(ray, scene);
+            Color c = BLACK;
+            for (u32 s = 0; s < rays_per_pixel; ++s)
+            {
+                Vec3 offset = SampleUnitSquare();
+                Ray ray = camera.GenerateRay((f32)x + offset.X, (f32)y + offset.Y);
+                c += RayColor(ray, scene);
+            }
+            image[x, y] = c / (f32)rays_per_pixel;
         }
     }
     return image;

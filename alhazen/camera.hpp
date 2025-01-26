@@ -28,7 +28,7 @@ struct Camera
     Vec3 PixelDeltaV;
     Resolution ImageResolution;
 
-    Ray GenerateRay(u32 x, u32 y) const;
+    Ray GenerateRay(f32 x, f32 y) const;
 };
 
 Camera CreateCamera(Point3 position, Vec3 forward, CameraProperties properties);

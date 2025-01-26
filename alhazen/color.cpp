@@ -1,5 +1,23 @@
 #include "color.hpp"
 
+Color &Color::operator+=(const Color &rhs)
+{
+    Red += rhs.Red;
+    Green += rhs.Green;
+    Blue += rhs.Blue;
+    return *this;
+}
+
+Color operator+(Color c1, Color c2)
+{
+    return {c1.Red + c2.Red, c1.Green + c2.Green, c1.Blue + c2.Blue};
+}
+
+Color operator/(Color c1, f32 s)
+{
+    return {c1.Red / s, c1.Green / s, c1.Blue / s};
+}
+
 Color LinearBlend(Color c1, Color c2, f32 a)
 {
     Color blended;

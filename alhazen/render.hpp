@@ -4,4 +4,4 @@
 #include "image.hpp"
 #include "scene.hpp"
 
-FloatImage RenderImage(const Camera &camera, const Scene &scene);
+FloatImage RenderImage(const Camera &camera, const Scene &scene, u32 rays_per_pixel);

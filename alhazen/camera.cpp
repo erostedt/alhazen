@@ -1,8 +1,8 @@
 #include "camera.hpp"
 
-Ray Camera::GenerateRay(u32 x, u32 y) const
+Ray Camera::GenerateRay(f32 x, f32 y) const
 {
-    const Point3 pixel_center = PixelTopLeft + ((f32)x * PixelDeltaU) + ((f32)y * PixelDeltaV);
+    const Point3 pixel_center = PixelTopLeft + (x * PixelDeltaU) + (y * PixelDeltaV);
     const Vec3 ray_direction = pixel_center - Position;
     return {Position, ray_direction};
 }
