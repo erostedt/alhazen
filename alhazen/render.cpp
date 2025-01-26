@@ -86,7 +86,7 @@ Color RayColor(const Ray &r, const Scene &scene, u32 max_bounces)
     const HitPayload payload = TraceRay(scene.spheres, r, interval);
     if (payload.ObjectIndex >= 0)
     {
-        Vec3 direction = RandomVectorOnHemisphere(payload.Normal);
+        Vec3 direction = payload.Normal + RandomUnitVector();
         Ray new_ray{payload.Position, direction};
         return 0.5f * RayColor(new_ray, scene, max_bounces - 1);
     }
