@@ -78,14 +78,14 @@ Vec3 RandomUnitVector()
 {
     while (true)
     {
-        Vec3 u;
-        u.X = UniformF32(-1.0f, 1.0f);
-        u.Y = UniformF32(-1.0f, 1.0f);
-        u.Z = UniformF32(-1.0f, 1.0f);
+        Vec3 v;
+        v.X = UniformF32(-1.0f, 1.0f);
+        v.Y = UniformF32(-1.0f, 1.0f);
+        v.Z = UniformF32(-1.0f, 1.0f);
 
-        f32 squared_length = SquaredLength(u);
-        if (1e-10f < squared_length && squared_length <= 1.0f)
-            return u / std::sqrt(squared_length);
+        f32 squared_length = SquaredLength(v);
+        if (1e-30f < squared_length && squared_length <= 1.0f)
+            return v / std::sqrt(squared_length);
     }
 }
 
