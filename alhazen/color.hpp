@@ -12,6 +12,7 @@ struct Color
 };
 
 Color LinearBlend(Color c1, Color c2, f32 a);
+Color LinearToGamma(Color c);
 
 Color operator+(Color c1, Color c2);
 

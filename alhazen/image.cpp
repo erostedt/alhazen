@@ -1,4 +1,5 @@
 #include "image.hpp"
+#include "color.hpp"
 #include <algorithm>
 
 FloatImage CreateFloatImage(u32 width, u32 height)
@@ -26,10 +27,11 @@ void WriteFloatImageToPPM(std::ostream &dst, FloatImage image)
         for (u32 x = 0; x < image.Width; ++x)
         {
             const Color &rgb = image[x, y];
+            Color gamma = LinearToGamma(rgb);
 
-            i32 r = std::clamp(i32(255.999f * rgb.Red), 0, 255);
-            i32 g = std::clamp(i32(255.999f * rgb.Green), 0, 255);
-            i32 b = std::clamp(i32(255.999f * rgb.Blue), 0, 255);
+            i32 r = std::clamp(i32(255.999f * gamma.Red), 0, 255);
+            i32 g = std::clamp(i32(255.999f * gamma.Green), 0, 255);
+            i32 b = std::clamp(i32(255.999f * gamma.Blue), 0, 255);
 
             dst << r << ' ' << g << ' ' << b << '\n';
         }

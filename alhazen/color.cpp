@@ -1,4 +1,5 @@
 #include "color.hpp"
+#include <cmath>
 
 Color &Color::operator+=(const Color &rhs)
 {
@@ -35,4 +36,13 @@ Color LinearBlend(Color c1, Color c2, f32 a)
     blended.Green = a * c1.Green + (1.0f - a) * c2.Green;
     blended.Blue = a * c1.Blue + (1.0f - a) * c2.Blue;
     return blended;
+}
+
+Color LinearToGamma(Color c)
+{
+    Color gamma;
+    gamma.Red = std::pow(c.Red, 1.0f / 2.2f);
+    gamma.Green = std::pow(c.Green, 1.0f / 2.2f);
+    gamma.Blue = std::pow(c.Blue, 1.0f / 2.2f);
+    return gamma;
 }
