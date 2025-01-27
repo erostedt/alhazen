@@ -74,6 +74,11 @@ Vec3 Normalized(Vec3 v)
     return v / Length(v);
 }
 
+bool NearZero(Vec3 v, f32 tolerance)
+{
+    return SquaredLength(v) < tolerance;
+}
+
 Vec3 RandomUnitVector()
 {
     while (true)

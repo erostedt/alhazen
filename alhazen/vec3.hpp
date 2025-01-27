@@ -29,5 +29,7 @@ f32 SquaredLength(Vec3 v);
 f32 Length(Vec3 v);
 Vec3 Normalized(Vec3 v);
 
+bool NearZero(Vec3 v, f32 tolerance = 1e-8f);
+
 Vec3 RandomUnitVector();
 Vec3 RandomVectorOnHemisphere(Vec3 normal);
