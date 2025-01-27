@@ -4,6 +4,7 @@
 #include "hit_payload.hpp"
 #include "image.hpp"
 #include "interval.hpp"
+#include "material.hpp"
 #include "random.hpp"
 #include "scene.hpp"
 #include "types.hpp"
@@ -83,12 +84,12 @@ Color RayColor(const Ray &r, const Scene &scene, u32 max_bounces)
     }
 
     Interval interval = {0.001f, std::numeric_limits<f32>::infinity()};
-    const HitPayload payload = TraceRay(scene.spheres, r, interval);
-    if (payload.ObjectIndex >= 0)
+    const HitPayload hit = TraceRay(scene.Spheres, r, interval);
+    if (hit.ObjectIndex >= 0)
     {
-        Vec3 direction = payload.Normal + RandomUnitVector();
-        Ray new_ray{payload.Position, direction};
-        return 0.5f * RayColor(new_ray, scene, max_bounces - 1);
+        u32 material_index = scene.Spheres[(size_t)hit.ObjectIndex].MaterialIndex;
+        ScatterPayload scatter = Scatter(r, hit, scene.Materials[material_index]);
+        return scatter.Attenuation * RayColor(scatter.Scattered, scene, max_bounces - 1);
     }
 
     Vec3 v = Normalized(r.Direction);

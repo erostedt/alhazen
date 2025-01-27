@@ -1,13 +1,28 @@
-#include <cmath>
 #include <iostream>
+#include <vector>
 
 #include "camera.hpp"
 #include "image.hpp"
+#include "material.hpp"
 #include "render.hpp"
 
 int main()
 {
-    const Scene scene = {{Sphere{{0, 0, -1}, 0.5f}, Sphere{{0, -100.5, -1}, 100.0f}}};
+    const std::vector<Material> materials = {
+        {MaterialType::LAMBERTIAN, {.L = {0.8f, 0.8f, 0.0f}}},
+        {MaterialType::LAMBERTIAN, {.L = {0.1f, 0.2f, 0.5f}}},
+        {MaterialType::METAL, {.M = {0.8f, 0.8f, 0.8f}}},
+        {MaterialType::METAL, {.M = {0.8f, 0.6f, 0.2f}}},
+    };
+
+    const std::vector<Sphere> objects = {
+        Sphere{{0.0f, -100.5f, -1.0f}, 100.0f, 0},
+        Sphere{{0.0, 0.0, -1.2f}, 0.5f, 1},
+        Sphere{{-1.0f, 0.0f, -1.0f}, 0.5f, 2},
+        Sphere{{1.0f, 0.0f, -1.0f}, 0.5f, 3},
+    };
+
+    const Scene scene = {materials, objects};
 
     CameraProperties props;
     props.ImageWidth = 400;
