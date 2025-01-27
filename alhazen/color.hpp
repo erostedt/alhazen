@@ -16,6 +16,7 @@ Color LinearToGamma(Color c);
 
 Color operator+(Color c1, Color c2);
 
+Color operator*(Color c1, Color c2);
 Color operator*(Color c, f32 s);
 Color operator*(f32 s, Color c);
 

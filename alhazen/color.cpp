@@ -14,6 +14,11 @@ Color operator+(Color c1, Color c2)
     return {c1.Red + c2.Red, c1.Green + c2.Green, c1.Blue + c2.Blue};
 }
 
+Color operator*(Color c1, Color c2)
+{
+    return {c1.Red * c2.Red, c1.Green * c2.Green, c1.Blue * c2.Blue};
+}
+
 Color operator*(Color c, f32 s)
 {
     return {c.Red * s, c.Green * s, c.Blue * s};
