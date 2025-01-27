@@ -4,7 +4,7 @@ Ray Camera::GenerateRay(f32 x, f32 y) const
 {
     const Point3 pixel_center = PixelTopLeft + (x * PixelDeltaU) + (y * PixelDeltaV);
     const Vec3 ray_direction = pixel_center - Position;
-    return {Position, ray_direction};
+    return {Position, Normalized(ray_direction)};
 }
 
 Camera CreateCamera(Point3 position, Vec3 forward, CameraProperties properties)
