@@ -56,7 +56,7 @@ Vec3 operator/(Vec3 v, f32 s)
 
 f32 Dot(Vec3 u, Vec3 v)
 {
-    return u.X * v.X + u.Y * v.Y + u.Z * u.Z;
+    return u.X * v.X + u.Y * v.Y + u.Z * v.Z;
 }
 
 f32 SquaredLength(Vec3 v)
