@@ -39,7 +39,8 @@ static Vec3 Reflect(Vec3 v, Vec3 normal)
 ScatterPayload Scatter(Ray incoming_ray, HitPayload hit, Metal material)
 {
     ScatterPayload payload;
-    Vec3 direction = Reflect(incoming_ray.Direction, hit.Normal);
+    Vec3 fuzziness = material.FuzzFactor * RandomUnitVector();
+    Vec3 direction = Reflect(incoming_ray.Direction, hit.Normal) + fuzziness;
     payload.Scattered = {hit.Position, direction};
     payload.Attenuation = material.Albedo;
     return payload;

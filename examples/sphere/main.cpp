@@ -8,11 +8,16 @@
 
 int main()
 {
+    Lambertian material_ground = {0.8f, 0.8f, 0.0f};
+    Lambertian material_center = {0.1f, 0.2f, 0.5f};
+    Metal material_left = {{0.8f, 0.8f, 0.8f}, 0.3f};
+    Metal material_right = {{0.8f, 0.6f, 0.2f}, 1.0f};
+
     const std::vector<Material> materials = {
-        {MaterialType::LAMBERTIAN, {.L = {0.8f, 0.8f, 0.0f}}},
-        {MaterialType::LAMBERTIAN, {.L = {0.1f, 0.2f, 0.5f}}},
-        {MaterialType::METAL, {.M = {0.8f, 0.8f, 0.8f}}},
-        {MaterialType::METAL, {.M = {0.8f, 0.6f, 0.2f}}},
+        {MaterialType::LAMBERTIAN, {.L = material_ground}},
+        {MaterialType::LAMBERTIAN, {.L = material_center}},
+        {MaterialType::METAL, {.M = material_left}},
+        {MaterialType::METAL, {.M = material_right}},
     };
 
     const std::vector<Sphere> objects = {

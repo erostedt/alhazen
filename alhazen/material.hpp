@@ -18,6 +18,7 @@ struct Lambertian
 struct Metal
 {
     Color Albedo;
+    f32 FuzzFactor;
 };
 
 enum class MaterialType
