@@ -50,6 +50,9 @@ ScatterPayload Scatter(Ray incoming_ray, HitPayload hit, Material material)
     case MaterialType::METAL: {
         return Scatter(incoming_ray, hit, material.M);
     }
+    case MaterialType::DIELECTRIC: {
+        return Scatter(incoming_ray, hit, material.D);
+    }
         assert(0 && "Unexpected");
     }
 }
@@ -78,8 +81,37 @@ ScatterPayload Scatter(Ray incoming_ray, HitPayload hit, Metal material)
 {
     ScatterPayload payload;
     Vec3 fuzziness = material.FuzzFactor * RandomUnitVector();
-    Vec3 direction = Reflect(incoming_ray.Direction, hit.Normal) + fuzziness;
+    Vec3 direction = Normalized(Reflect(incoming_ray.Direction, hit.Normal) + fuzziness);
     payload.Scattered = {hit.Position, direction};
     payload.Attenuation = material.Albedo;
+    payload.Absorbed = Dot(direction, hit.Normal) < 0;
+    return payload;
+}
+
+static Vec3 Refract(Vec3 v, Vec3 normal, f32 relative_refractive_index)
+{
+    f32 cos_theta = std::clamp(Dot(-v, normal), -1.0f, 1.0f);
+    Vec3 perpendicular = relative_refractive_index * (v + cos_theta * normal);
+    Vec3 parallel = -std::sqrt(std::fabs(1.0f - SquaredLength(perpendicular))) * normal;
+    return perpendicular + parallel;
+}
+
+ScatterPayload Scatter(Ray incoming_ray, HitPayload hit, Dielectric material)
+{
+    ScatterPayload payload;
+    payload.Attenuation = Color{1.0f, 1.0f, 1.0f};
+
+    Vec3 normal = hit.Normal;
+    f32 refractive_index = 1.0f / material.RefractiveIndex;
+
+    if (!FrontFacing(incoming_ray, hit.Normal))
+    {
+        normal = -hit.Normal;
+        refractive_index = 1.0f / refractive_index;
+    }
+
+    Vec3 refracted = Refract(incoming_ray.Direction, normal, refractive_index);
+
+    payload.Scattered = Ray(hit.Position, refracted);
     return payload;
 }

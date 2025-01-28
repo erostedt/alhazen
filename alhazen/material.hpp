@@ -8,6 +8,7 @@ struct ScatterPayload
 {
     Ray Scattered;
     Color Attenuation;
+    bool Absorbed = false;
 };
 
 struct Lambertian
@@ -50,3 +51,4 @@ Material CreateDielectric(f32 refractive_index);
 ScatterPayload Scatter(Ray incoming_ray, HitPayload hit, Material material);
 ScatterPayload Scatter(HitPayload hit, Lambertian material);
 ScatterPayload Scatter(Ray incoming_ray, HitPayload hit, Metal material);
+ScatterPayload Scatter(Ray incoming_ray, HitPayload hit, Dielectric material);

@@ -89,7 +89,7 @@ Color RayColor(const Ray &r, const Scene &scene, u32 max_bounces)
     {
         u32 material_index = scene.Spheres[(size_t)hit.ObjectIndex].MaterialIndex;
         ScatterPayload scatter = Scatter(r, hit, scene.Materials[material_index]);
-        return scatter.Attenuation * RayColor(scatter.Scattered, scene, max_bounces - 1);
+        return (scatter.Absorbed) ? BLACK : scatter.Attenuation * RayColor(scatter.Scattered, scene, max_bounces - 1);
     }
 
     Vec3 v = Normalized(r.Direction);
