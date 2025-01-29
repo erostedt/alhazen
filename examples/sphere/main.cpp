@@ -5,6 +5,7 @@
 #include "image.hpp"
 #include "material.hpp"
 #include "render.hpp"
+#include "vec3.hpp"
 
 int main()
 {
@@ -25,7 +26,7 @@ int main()
     props.ImageWidth = 400;
     props.VFOVDegrees = 90.0f;
 
-    const Camera camera = CreateCamera({0, 0, 0}, {0, 0, -1}, props);
+    const Camera camera = CreateCamera({-2, 2, 1}, {0, 0, -1}, UP, props);
     const u32 rays_per_pixel = 10;
     const u32 max_bounces = 50;
     FloatImage image = RenderImage(camera, scene, rays_per_pixel, max_bounces);

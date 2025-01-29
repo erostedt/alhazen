@@ -74,6 +74,15 @@ Vec3 Normalized(Vec3 v)
     return v / Length(v);
 }
 
+Vec3 Cross(Vec3 u, Vec3 v)
+{
+    Vec3 c;
+    c.X = u.Y * v.Z - u.Z * v.Y;
+    c.Y = u.Z * v.X - u.X * v.Z;
+    c.Z = u.X * v.Y - u.Y * v.X;
+    return c;
+}
+
 bool NearZero(Vec3 v, f32 tolerance)
 {
     return SquaredLength(v) < tolerance;

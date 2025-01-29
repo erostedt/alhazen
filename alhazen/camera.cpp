@@ -1,4 +1,5 @@
 #include "camera.hpp"
+#include "vec3.hpp"
 #include <cmath>
 #include <numbers>
 
@@ -30,27 +31,34 @@ static Viewport CalculateViewport(f32 vfov_degrees, f32 focal_length, f32 aspect
     return {viewport_width, viewport_height};
 }
 
-Camera CreateCamera(Point3 position, Vec3 forward, CameraProperties properties)
+Camera CreateCamera(Point3 position, Point3 target, Vec3 up, CameraProperties properties)
 {
     u32 image_width = properties.ImageWidth;
     f32 ideal_aspect_ratio = properties.IdealAspectRatio;
-    f32 focal_length = properties.FocalLength;
 
     u32 image_height = (u32)((f32)image_width / ideal_aspect_ratio);
     image_height = (image_height < 1) ? 1 : image_height;
 
     f32 actual_aspect_ratio = (f32)image_width / (f32)image_height;
+    f32 focal_length = SquaredLength(target - position);
 
     Viewport viewport = CalculateViewport(properties.VFOVDegrees, focal_length, actual_aspect_ratio);
 
-    Vec3 viewport_u = {viewport.Width, 0.0f, 0.0f};
-    Vec3 viewport_v = {0.0f, -viewport.Height, 0.0f};
+    Vec3 forward = -Normalized(target - position); // Minus is forward
+    Vec3 rightward = Cross(up, forward);
+    Vec3 upward = Cross(forward, rightward);
 
-    Point3 viewport_center = position + focal_length * forward;
+    Vec3 viewport_u = viewport.Width * rightward;
+    Vec3 viewport_v = -viewport.Height * upward;
+
+    Point3 viewport_center = position - focal_length * forward;
     Point3 viewport_upper_left = viewport_center - viewport_u / 2 - viewport_v / 2;
 
     Camera camera;
     camera.Position = position;
+    camera.Right = rightward;
+    camera.Up = upward;
+    camera.Forward = forward;
     camera.PixelDeltaU = viewport_u / (f32)image_width;
     camera.PixelDeltaV = viewport_v / (f32)image_height;
     camera.PixelTopLeft = viewport_upper_left + 0.5 * (camera.PixelDeltaU + camera.PixelDeltaV);
