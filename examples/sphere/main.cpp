@@ -23,8 +23,10 @@ int main()
     const Scene scene = {materials, objects};
 
     CameraProperties props;
-    props.ImageWidth = 400;
-    props.VFOVDegrees = 90.0f;
+    props.ImageWidth = 800;
+    props.VFOVDegrees = 20.0f;
+    props.DefocusAngleDegrees = 10.0f;
+    props.FocusDistance = 3.4f;
 
     const Camera camera = CreateCamera({-2, 2, 1}, {0, 0, -1}, UP, props);
     const u32 rays_per_pixel = 10;

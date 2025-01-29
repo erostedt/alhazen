@@ -34,6 +34,7 @@ bool NearZero(Vec3 v, f32 tolerance = 1e-8f);
 
 Vec3 RandomUnitVector();
 Vec3 RandomVectorOnHemisphere(Vec3 normal);
+Vec3 RandomVectorOnUnitDisk();
 
 const Vec3 RIGHT = {1.0f, 0.0f, 0.0f};
 const Vec3 UP = {0.0f, 1.0f, 0.0f};

@@ -111,3 +111,16 @@ Vec3 RandomVectorOnHemisphere(Vec3 normal)
     else
         return -on_unit_sphere;
 }
+
+Vec3 RandomVectorOnUnitDisk()
+{
+    Vec3 v;
+    v.Z = 0.0f;
+    while (true)
+    {
+        v.X = UniformF32(-1.0f, 1.0f);
+        v.Y = UniformF32(-1.0f, 1.0f);
+        if (SquaredLength(v) < 1.0f)
+            return v;
+    }
+}
