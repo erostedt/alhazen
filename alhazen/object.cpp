@@ -13,7 +13,7 @@ Object CreateSphere(Point3 center, f32 radius, u32 material_index)
     return obj;
 }
 
-f32 HitSphere(Sphere sphere, Ray r, Interval interval)
+f32 HitSphere(const Sphere &sphere, const Ray &r, Interval interval)
 {
     Vec3 oc = sphere.Center - r.Origin;
     f32 a = SquaredLength(r.Direction);
@@ -43,18 +43,20 @@ f32 HitSphere(Sphere sphere, Ray r, Interval interval)
     return miss;
 }
 
-f32 HitObject(Object obj, Ray r, Interval interval)
+f32 HitObject(const Object &obj, const Ray &r, Interval interval)
 {
     switch (obj.Type)
     {
     case ObjectType::SPHERE: {
         return HitSphere(obj.S, r, interval);
     }
+    default:
+        assert(0 && "Invalid object type");
+        return -1.0f;
     }
-    assert(0 && "Invalid object type");
 }
 
-Vec3 ObjectNormal(Point3 hit, Object obj)
+Vec3 ObjectNormal(Point3 hit, const Object &obj)
 {
 
     switch (obj.Type)
@@ -62,11 +64,13 @@ Vec3 ObjectNormal(Point3 hit, Object obj)
     case ObjectType::SPHERE: {
         return SphereNormal(hit, obj.S);
     }
+    default:
+        assert(0 && "Invalid object type");
+        return {};
     }
-    assert(0 && "Invalid object type");
 }
 
-Vec3 SphereNormal(Point3 hit, Sphere sphere)
+Vec3 SphereNormal(Point3 hit, const Sphere &sphere)
 {
     return (hit - sphere.Center) / sphere.Radius;
 }
