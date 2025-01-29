@@ -67,16 +67,14 @@ int main()
     const Scene scene = {materials, objects};
 
     CameraProperties props;
-    // props.ImageWidth = 1200;
-    props.ImageWidth = 200;
+    props.ImageWidth = 1200;
     props.VFOVDegrees = 20.0f;
     props.DefocusAngleDegrees = 0.6f;
     props.FocusDistance = 10.0f;
 
     const Camera camera = CreateCamera({13, 2, 3}, {0, 0, 0}, UP, props);
-    // const u32 rays_per_pixel = 500;
-    const u32 rays_per_pixel = 25;
-    const u32 max_bounces = 50;
+    const u32 rays_per_pixel = 10;
+    const u32 max_bounces = 20;
     FloatImage image = RenderImage(camera, scene, rays_per_pixel, max_bounces);
     WriteFloatImageToPPM(std::cout, image);
 }
