@@ -43,7 +43,7 @@ Material CreateDielectric(f32 refractive_index)
     return material;
 }
 
-ScatterPayload Scatter(Ray incoming_ray, HitPayload hit, Material material)
+ScatterPayload Scatter(Ray incoming_ray, const HitPayload &hit, Material material)
 {
     switch (material.Type)
     {
@@ -62,7 +62,7 @@ ScatterPayload Scatter(Ray incoming_ray, HitPayload hit, Material material)
     }
 }
 
-ScatterPayload Scatter(HitPayload hit, Lambertian material)
+ScatterPayload Scatter(const HitPayload &hit, Lambertian material)
 {
     ScatterPayload payload;
 
@@ -82,7 +82,7 @@ static Vec3 Reflect(Vec3 v, Vec3 normal)
     return v - 2.0f * Dot(v, normal) * normal;
 }
 
-ScatterPayload Scatter(Ray incoming_ray, HitPayload hit, Metal material)
+ScatterPayload Scatter(Ray incoming_ray, const HitPayload &hit, Metal material)
 {
     ScatterPayload payload;
     Vec3 fuzziness = material.FuzzFactor * RandomUnitVector();
@@ -115,7 +115,7 @@ static f32 Reflectance(f32 refractive_index, f32 cosine)
     return r0 + (1.0f - r0) * std::pow((1.0f - cosine), 5.0f);
 }
 
-ScatterPayload Scatter(Ray incoming_ray, HitPayload hit, Dielectric material)
+ScatterPayload Scatter(Ray incoming_ray, const HitPayload &hit, Dielectric material)
 {
     ScatterPayload payload;
     payload.Attenuation = Color{1.0f, 1.0f, 1.0f};
