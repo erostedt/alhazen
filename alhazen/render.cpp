@@ -8,48 +8,19 @@
 #include "image.hpp"
 #include "interval.hpp"
 #include "material.hpp"
+#include "object.hpp"
 #include "random.hpp"
 #include "scene.hpp"
 #include "types.hpp"
 #include "vec3.hpp"
 
-f32 HitSphere(Sphere sphere, Ray r, Interval interval)
-{
-    Vec3 oc = sphere.Center - r.Origin;
-    f32 a = SquaredLength(r.Direction);
-    f32 h = Dot(r.Direction, oc);
-    f32 c = SquaredLength(oc) - sphere.Radius * sphere.Radius;
-    f32 discriminant = h * h - a * c;
-
-    f32 miss = -1.0f;
-    if (discriminant < 0.0f)
-    {
-        return miss;
-    }
-
-    f32 square_root_of_discriminant = std::sqrt(discriminant);
-    f32 closest_hit = (h - square_root_of_discriminant) / a;
-    if (interval.Surrounds(closest_hit))
-    {
-        return closest_hit;
-    }
-
-    f32 further_hit = (h + square_root_of_discriminant) / a;
-    if (interval.Surrounds(further_hit))
-    {
-        return further_hit;
-    }
-
-    return miss;
-}
-
-HitPayload TraceRay(const std::vector<Sphere> &world, const Ray &r, Interval interval)
+HitPayload TraceRay(const std::vector<Object> &objects, const Ray &r, Interval interval)
 {
     i32 closest_object_index = -1;
     f32 closest_hit = std::numeric_limits<f32>::max();
-    for (size_t i = 0; i < world.size(); ++i)
+    for (size_t i = 0; i < objects.size(); ++i)
     {
-        f32 hit = HitSphere(world[i], r, interval);
+        f32 hit = HitObject(objects[i], r, interval);
         if (interval.Surrounds(hit) && hit < closest_hit)
         {
             closest_object_index = (i32)i;
@@ -64,12 +35,12 @@ HitPayload TraceRay(const std::vector<Sphere> &world, const Ray &r, Interval int
         return payload;
     }
 
-    Sphere sphere = world[(size_t)closest_object_index];
+    Object obj = objects[(size_t)closest_object_index];
 
     payload.Distance = closest_hit;
     payload.ObjectIndex = closest_object_index;
     payload.Position = r.At(closest_hit);
-    payload.Normal = (payload.Position - sphere.Center) / sphere.Radius;
+    payload.Normal = ObjectNormal(payload.Position, obj);
     return payload;
 }
 
@@ -84,7 +55,7 @@ Color RayColor(Ray r, const Scene &scene, u32 max_bounces)
     while (max_bounces > 0)
     {
         Interval interval = {0.001f, std::numeric_limits<f32>::infinity()};
-        const HitPayload hit = TraceRay(scene.Spheres, r, interval);
+        const HitPayload hit = TraceRay(scene.Objects, r, interval);
         if (hit.ObjectIndex < 0)
         {
             Vec3 v = Normalized(r.Direction);
@@ -94,7 +65,7 @@ Color RayColor(Ray r, const Scene &scene, u32 max_bounces)
             return color * LinearBlend(light_blue, white, a);
         }
 
-        u32 material_index = scene.Spheres[(size_t)hit.ObjectIndex].MaterialIndex;
+        u32 material_index = scene.Objects[(size_t)hit.ObjectIndex].MaterialIndex;
         ScatterPayload scatter = Scatter(r, hit, scene.Materials[material_index]);
         if (scatter.Absorbed)
         {

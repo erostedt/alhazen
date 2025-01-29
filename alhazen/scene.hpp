@@ -3,18 +3,10 @@
 #include <vector>
 
 #include "material.hpp"
-#include "point3.hpp"
-#include "types.hpp"
-
-struct Sphere
-{
-    Point3 Center;
-    f32 Radius;
-    u32 MaterialIndex;
-};
+#include "object.hpp"
 
 struct Scene
 {
     std::vector<Material> Materials;
-    std::vector<Sphere> Spheres;
+    std::vector<Object> Objects;
 };
