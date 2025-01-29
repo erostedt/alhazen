@@ -11,7 +11,7 @@ int main()
 {
     const std::vector<Material> materials = {
         CreateLambertian({0.8f, 0.8f, 0.0f}), CreateLambertian({0.1f, 0.2f, 0.5f}),  CreateDielectric(1.5f),
-        CreateDielectric(1.0f / 1.5f),        CreateMetal({0.8f, 0.6f, 0.2f}, 0.0f),
+        CreateDielectric(1.0f / 1.5f),        CreateMetal({0.8f, 0.6f, 0.2f}, 1.0f),
     };
 
     const std::vector<Sphere> objects = {
