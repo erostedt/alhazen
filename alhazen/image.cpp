@@ -1,6 +1,8 @@
 #include "image.hpp"
-#include "color.hpp"
+
 #include <algorithm>
+
+#include "color.hpp"
 
 FloatImage CreateFloatImage(u32 width, u32 height)
 {

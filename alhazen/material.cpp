@@ -1,11 +1,13 @@
 #include "material.hpp"
+
+#include <algorithm>
+#include <cassert>
+#include <cmath>
+
 #include "color.hpp"
 #include "random.hpp"
 #include "ray.hpp"
 #include "vec3.hpp"
-#include <algorithm>
-#include <cassert>
-#include <cmath>
 
 Material CreateLambertian(Color albedo)
 {

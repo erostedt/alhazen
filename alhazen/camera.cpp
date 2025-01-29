@@ -1,7 +1,9 @@
 #include "camera.hpp"
-#include "vec3.hpp"
+
 #include <cmath>
 #include <numbers>
+
+#include "vec3.hpp"
 
 Ray Camera::GenerateRay(f32 x, f32 y) const
 {

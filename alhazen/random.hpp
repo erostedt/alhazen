@@ -1,4 +1,5 @@
 #pragma once
+
 #include "types.hpp"
 
 f32 UniformF32();

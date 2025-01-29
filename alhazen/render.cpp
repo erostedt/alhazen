@@ -1,4 +1,7 @@
 #include "render.hpp"
+
+#include <limits>
+
 #include "camera.hpp"
 #include "color.hpp"
 #include "hit_payload.hpp"
@@ -9,7 +12,6 @@
 #include "scene.hpp"
 #include "types.hpp"
 #include "vec3.hpp"
-#include <limits>
 
 f32 HitSphere(Sphere sphere, Ray r, Interval interval)
 {

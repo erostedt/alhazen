@@ -1,6 +1,8 @@
 #include "color.hpp"
-#include "random.hpp"
+
 #include <cmath>
+
+#include "random.hpp"
 
 Color &Color::operator+=(const Color &rhs)
 {
