@@ -1,5 +1,6 @@
 #include "material.hpp"
 #include "color.hpp"
+#include "random.hpp"
 #include "ray.hpp"
 #include "vec3.hpp"
 #include <algorithm>
@@ -103,6 +104,13 @@ static bool TotalInternalReflection(Vec3 v, Vec3 normal, f32 refractive_index)
     return (sin_theta * refractive_index) > 1.0f;
 }
 
+static f32 Reflectance(f32 refractive_index, f32 cosine)
+{
+    f32 r0 = (1.0f - refractive_index) / (1.0f + refractive_index);
+    r0 = r0 * r0;
+    return r0 + (1.0f - r0) * std::pow((1.0f - cosine), 5.0f);
+}
+
 ScatterPayload Scatter(Ray incoming_ray, HitPayload hit, Dielectric material)
 {
     ScatterPayload payload;
@@ -117,9 +125,13 @@ ScatterPayload Scatter(Ray incoming_ray, HitPayload hit, Dielectric material)
         refractive_index = 1.0f / refractive_index;
     }
 
-    Vec3 direction = TotalInternalReflection(incoming_ray.Direction, normal, refractive_index)
-                         ? Reflect(incoming_ray.Direction, normal)
-                         : Refract(incoming_ray.Direction, normal, refractive_index);
+    f32 cosine = std::clamp(Dot(-incoming_ray.Direction, normal), -1.0f, 1.0f);
+
+    bool should_reflect = TotalInternalReflection(incoming_ray.Direction, normal, refractive_index) ||
+                          Reflectance(refractive_index, cosine) > UniformF32();
+
+    Vec3 direction = should_reflect ? Reflect(incoming_ray.Direction, normal)
+                                    : Refract(incoming_ray.Direction, normal, refractive_index);
 
     payload.Scattered = Ray(hit.Position, direction);
     return payload;
