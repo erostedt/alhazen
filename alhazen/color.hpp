@@ -14,6 +14,9 @@ struct Color
 Color LinearBlend(Color c1, Color c2, f32 a);
 Color LinearToGamma(Color c);
 
+Color RandomColor();
+Color RandomColor(f32 min, f32 max);
+
 Color operator+(Color c1, Color c2);
 
 Color operator*(Color c1, Color c2);
@@ -23,3 +26,4 @@ Color operator*(f32 s, Color c);
 Color operator/(Color c, f32 s);
 
 const Color BLACK = {0, 0, 0};
+const Color WHITE = {1, 1, 1};

@@ -1,4 +1,5 @@
 #include "color.hpp"
+#include "random.hpp"
 #include <cmath>
 
 Color &Color::operator+=(const Color &rhs)
@@ -50,4 +51,14 @@ Color LinearToGamma(Color c)
     gamma.Green = std::pow(c.Green, 1.0f / 2.2f);
     gamma.Blue = std::pow(c.Blue, 1.0f / 2.2f);
     return gamma;
+}
+
+Color RandomColor()
+{
+    return {UniformF32(), UniformF32(), UniformF32()};
+}
+
+Color RandomColor(f32 min, f32 max)
+{
+    return {UniformF32(min, max), UniformF32(min, max), UniformF32(min, max)};
 }
