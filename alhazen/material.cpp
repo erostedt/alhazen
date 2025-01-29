@@ -56,7 +56,9 @@ ScatterPayload Scatter(Ray incoming_ray, HitPayload hit, Material material)
     case MaterialType::DIELECTRIC: {
         return Scatter(incoming_ray, hit, material.D);
     }
+    default:
         assert(0 && "Unexpected");
+        return {};
     }
 }
 
