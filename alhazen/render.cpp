@@ -1,5 +1,6 @@
 #include "render.hpp"
 
+#include <iostream>
 #include <limits>
 
 #include "camera.hpp"
@@ -53,7 +54,7 @@ static Color RayColor(Ray r, const Scene &scene, u32 max_bounces)
         const HitPayload hit = TraceRay(scene.Objects, r, interval);
         if (hit.ObjectIndex < 0)
         {
-            Vec3 v = Normalized(r.Direction);
+            Vec3 v = r.Direction;
             f32 a = 0.5f * (v.Y + 1.0f);
             Color light_blue = {0.5f, 0.7f, 1.0f};
             Color white = {1.0f, 1.0f, 1.0f};
@@ -86,6 +87,7 @@ FloatImage RenderImage(const Camera &camera, const Scene &scene, u32 rays_per_pi
     FloatImage image = CreateFloatImage(camera.ImageResolution.Width, camera.ImageResolution.Height);
     for (u32 y = 0; y < image.Height; ++y)
     {
+        std::clog << "\rScanlines remaining: " << (image.Height - y) << ' ' << std::flush;
         for (u32 x = 0; x < image.Width; ++x)
         {
             Color c = BLACK;
