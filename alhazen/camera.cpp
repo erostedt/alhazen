@@ -40,7 +40,7 @@ static Viewport CalculateViewport(f32 vfov_degrees, f32 focus_distance, f32 aspe
     return {viewport_width, viewport_height};
 }
 
-Camera CreateCamera(Point3 position, Point3 target, Vec3 up, CameraProperties properties)
+Camera CreateCamera(Point3 position, Point3 target, Vec3 up, const CameraProperties &properties)
 {
     u32 image_width = properties.ImageWidth;
     f32 ideal_aspect_ratio = properties.IdealAspectRatio;

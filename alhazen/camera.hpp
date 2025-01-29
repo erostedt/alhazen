@@ -42,4 +42,4 @@ struct Camera
     Point3 SampleDefocusDisk() const;
 };
 
-Camera CreateCamera(Point3 position, Point3 target, Vec3 up, CameraProperties properties);
+Camera CreateCamera(Point3 position, Point3 target, Vec3 up, const CameraProperties &properties);
