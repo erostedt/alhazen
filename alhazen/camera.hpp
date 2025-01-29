@@ -4,14 +4,13 @@
 #include "ray.hpp"
 #include "types.hpp"
 #include "vec3.hpp"
-#include <cmath>
 
 struct CameraProperties
 {
     u32 ImageWidth = 400;
     f32 IdealAspectRatio = 16.0f / 9.0f;
     f32 FocalLength = 1.0f;
-    f32 ViewportHeight = 2.0f;
+    f32 VFOVDegrees = 90.0f;
 };
 
 struct Resolution

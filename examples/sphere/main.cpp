@@ -23,6 +23,7 @@ int main()
 
     CameraProperties props;
     props.ImageWidth = 400;
+    props.VFOVDegrees = 90.0f;
 
     const Camera camera = CreateCamera({0, 0, 0}, {0, 0, -1}, props);
     const u32 rays_per_pixel = 10;
