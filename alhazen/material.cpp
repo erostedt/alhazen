@@ -96,6 +96,13 @@ static Vec3 Refract(Vec3 v, Vec3 normal, f32 relative_refractive_index)
     return perpendicular + parallel;
 }
 
+static bool TotalInternalReflection(Vec3 v, Vec3 normal, f32 refractive_index)
+{
+    f32 cos_theta = std::clamp(Dot(-v, normal), -1.0f, 1.0f);
+    f32 sin_theta = std::sqrt(1.0f - cos_theta * cos_theta);
+    return (sin_theta * refractive_index) > 1.0f;
+}
+
 ScatterPayload Scatter(Ray incoming_ray, HitPayload hit, Dielectric material)
 {
     ScatterPayload payload;
@@ -110,8 +117,10 @@ ScatterPayload Scatter(Ray incoming_ray, HitPayload hit, Dielectric material)
         refractive_index = 1.0f / refractive_index;
     }
 
-    Vec3 refracted = Refract(incoming_ray.Direction, normal, refractive_index);
+    Vec3 direction = TotalInternalReflection(incoming_ray.Direction, normal, refractive_index)
+                         ? Reflect(incoming_ray.Direction, normal)
+                         : Refract(incoming_ray.Direction, normal, refractive_index);
 
-    payload.Scattered = Ray(hit.Position, refracted);
+    payload.Scattered = Ray(hit.Position, direction);
     return payload;
 }
