@@ -76,28 +76,34 @@ Color Vec3ToColor(Vec3 v)
     return {v.X, v.Y, v.Z};
 }
 
-Color RayColor(const Ray &r, const Scene &scene, u32 max_bounces)
+Color RayColor(Ray r, const Scene &scene, u32 max_bounces)
 {
-    if (max_bounces == 0)
+    Color color = WHITE;
+    while (max_bounces > 0)
     {
-        return BLACK;
-    }
+        Interval interval = {0.001f, std::numeric_limits<f32>::infinity()};
+        const HitPayload hit = TraceRay(scene.Spheres, r, interval);
+        if (hit.ObjectIndex < 0)
+        {
+            Vec3 v = Normalized(r.Direction);
+            f32 a = 0.5f * (v.Y + 1.0f);
+            Color light_blue = {0.5f, 0.7f, 1.0f};
+            Color white = {1.0f, 1.0f, 1.0f};
+            return color * LinearBlend(light_blue, white, a);
+        }
 
-    Interval interval = {0.001f, std::numeric_limits<f32>::infinity()};
-    const HitPayload hit = TraceRay(scene.Spheres, r, interval);
-    if (hit.ObjectIndex >= 0)
-    {
         u32 material_index = scene.Spheres[(size_t)hit.ObjectIndex].MaterialIndex;
         ScatterPayload scatter = Scatter(r, hit, scene.Materials[material_index]);
-        return (scatter.Absorbed) ? BLACK : scatter.Attenuation * RayColor(scatter.Scattered, scene, max_bounces - 1);
+        if (scatter.Absorbed)
+        {
+            return BLACK;
+        }
+        color = color * scatter.Attenuation;
+        r = scatter.Scattered;
+        --max_bounces;
     }
 
-    Vec3 v = Normalized(r.Direction);
-    f32 a = 0.5f * (v.Y + 1.0f);
-    Color light_blue = {0.5f, 0.7f, 1.0f};
-    Color white = {1.0f, 1.0f, 1.0f};
-
-    return LinearBlend(light_blue, white, a);
+    return BLACK;
 }
 
 Vec3 SampleUnitSquare()
