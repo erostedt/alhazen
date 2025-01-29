@@ -44,12 +44,7 @@ HitPayload TraceRay(const std::vector<Object> &objects, const Ray &r, Interval i
     return payload;
 }
 
-Color Vec3ToColor(Vec3 v)
-{
-    return {v.X, v.Y, v.Z};
-}
-
-Color RayColor(Ray r, const Scene &scene, u32 max_bounces)
+static Color RayColor(Ray r, const Scene &scene, u32 max_bounces)
 {
     Color color = WHITE;
     while (max_bounces > 0)
