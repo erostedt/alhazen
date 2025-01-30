@@ -55,8 +55,8 @@ Camera CreateCamera(Point3 position, Point3 target, Vec3 up, const CameraPropert
     Viewport viewport = CalculateViewport(properties.VFOVDegrees, focus_distance, actual_aspect_ratio);
 
     Vec3 forward = -Normalized(target - position); // Minus is forward
-    Vec3 rightward = Cross(up, forward);
-    Vec3 upward = Cross(forward, rightward);
+    Vec3 rightward = Normalized(Cross(up, forward));
+    Vec3 upward = Normalized(Cross(forward, rightward));
 
     Vec3 viewport_u = viewport.Width * rightward;
     Vec3 viewport_v = -viewport.Height * upward;
