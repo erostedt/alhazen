@@ -100,6 +100,7 @@ Vec3 RandomVectorOnHemisphere(Vec3 normal) noexcept;
 Vec3 RandomVectorOnUnitDisk() noexcept;
 
 const Vec3 ZERO = {0.0f, 0.0f, 0.0f};
+const Vec3 ONE = {1.0f, 1.0f, 1.0f};
 const Vec3 RIGHT = {1.0f, 0.0f, 0.0f};
 const Vec3 UP = {0.0f, 1.0f, 0.0f};
 const Vec3 FORWARD = {0.0f, 0.0f, -1.0f};
