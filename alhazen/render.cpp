@@ -11,6 +11,7 @@
 #include "material.hpp"
 #include "object.hpp"
 #include "random.hpp"
+#include "ray.hpp"
 #include "scene.hpp"
 #include "types.hpp"
 #include "vec3.hpp"
@@ -42,6 +43,11 @@ HitPayload TraceRay(const std::vector<Object> &objects, const Ray &r, Interval i
     payload.ObjectIndex = closest_object_index;
     payload.Position = r.At(closest_hit);
     payload.Normal = ObjectNormal(payload.Position, obj);
+    payload.FrontFacing = FrontFacing(r, payload.Normal);
+    if (!payload.FrontFacing)
+    {
+        payload.Normal = -payload.Normal;
+    }
     return payload;
 }
 
