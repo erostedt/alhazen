@@ -49,6 +49,3 @@ Material CreateMetal(Color albedo, f32 fuzz_factor);
 Material CreateDielectric(f32 refractive_index);
 
 ScatterPayload Scatter(Ray incoming_ray, const HitPayload &hit, Material material);
-ScatterPayload Scatter(const HitPayload &hit, Lambertian material);
-ScatterPayload Scatter(Ray incoming_ray, const HitPayload &hit, Metal material);
-ScatterPayload Scatter(Ray incoming_ray, const HitPayload &hit, Dielectric material);
