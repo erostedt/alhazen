@@ -11,7 +11,4 @@ struct Ray
     Point3 At(f32 t) const;
 };
 
-inline bool FrontFacing(const Ray &r, Vec3 outward_normal)
-{
-    return Dot(r.Direction, outward_normal) < 0;
-}
+bool FrontFacing(const Ray &r, Vec3 outward_normal);
