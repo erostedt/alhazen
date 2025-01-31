@@ -5,18 +5,12 @@
 
 #include "vec3.hpp"
 
-Ray Camera::GenerateRay(f32 x, f32 y) const
+Ray Camera::GenerateRay(f32 x, f32 y) const noexcept
 {
     const Point3 pixel_center = PixelTopLeft + (x * PixelDeltaU) + (y * PixelDeltaV);
     const Point3 ray_origin = (DefocusDiskAngle <= 0) ? Position : SampleDefocusDisk();
     const Vec3 ray_direction = pixel_center - ray_origin;
     return {ray_origin, Normalized(ray_direction)};
-}
-
-Point3 Camera::SampleDefocusDisk() const
-{
-    Vec3 v = RandomVectorOnUnitDisk();
-    return Position + (v.X * DefocusDiskU) + (v.Y * DefocusDiskV);
 }
 
 struct Viewport
@@ -25,7 +19,7 @@ struct Viewport
     f32 Height;
 };
 
-f32 Radians(f32 degrees)
+inline f32 Radians(f32 degrees)
 {
     return degrees * std::numbers::pi_v<f32> / 180.0f;
 }

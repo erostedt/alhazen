@@ -38,8 +38,12 @@ struct Camera
 
     Resolution ImageResolution;
 
-    Ray GenerateRay(f32 x, f32 y) const;
-    Point3 SampleDefocusDisk() const;
+    Ray GenerateRay(f32 x, f32 y) const noexcept;
+    inline Point3 SampleDefocusDisk() const noexcept
+    {
+        Vec3 v = RandomVectorOnUnitDisk();
+        return Position + (v.X * DefocusDiskU) + (v.Y * DefocusDiskV);
+    }
 };
 
 Camera CreateCamera(Point3 position, Point3 target, Vec3 up, const CameraProperties &properties);
