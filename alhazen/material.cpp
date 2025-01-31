@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cmath>
+#include <utility>
 
 #include "color.hpp"
 #include "random.hpp"
@@ -56,10 +57,8 @@ ScatterPayload Scatter(Ray incoming_ray, const HitPayload &hit, Material materia
     case MaterialType::DIELECTRIC: {
         return Scatter(incoming_ray, hit, material.D);
     }
-    default:
-        assert(0 && "Unexpected");
-        return {};
     }
+    std::unreachable();
 }
 
 ScatterPayload Scatter(const HitPayload &hit, Lambertian material)

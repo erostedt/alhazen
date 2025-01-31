@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <cmath>
+#include <utility>
 
 Object CreateSphere(Point3 center, f32 radius, u32 material_index)
 {
@@ -50,10 +51,8 @@ f32 HitObject(const Object &obj, const Ray &r, Interval interval)
     case ObjectType::SPHERE: {
         return HitSphere(obj.S, r, interval);
     }
-    default:
-        assert(0 && "Invalid object type");
-        return -1.0f;
     }
+    std::unreachable();
 }
 
 Vec3 ObjectNormal(Point3 hit, const Object &obj)
@@ -64,10 +63,8 @@ Vec3 ObjectNormal(Point3 hit, const Object &obj)
     case ObjectType::SPHERE: {
         return SphereNormal(hit, obj.S);
     }
-    default:
-        assert(0 && "Invalid object type");
-        return {};
     }
+    std::unreachable();
 }
 
 Vec3 SphereNormal(Point3 hit, const Sphere &sphere)
