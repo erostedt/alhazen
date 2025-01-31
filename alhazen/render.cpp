@@ -16,7 +16,7 @@
 #include "types.hpp"
 #include "vec3.hpp"
 
-HitPayload TraceRay(const std::vector<Object> &objects, const Ray &r, Interval interval)
+static HitPayload TraceRay(const std::vector<Object> &objects, const Ray &r, Interval interval)
 {
     i32 closest_object_index = -1;
     f32 closest_hit = std::numeric_limits<f32>::max();
