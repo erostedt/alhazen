@@ -119,13 +119,7 @@ ScatterPayload Scatter(Ray incoming_ray, const HitPayload &hit, Dielectric mater
     payload.Attenuation = WHITE;
 
     Vec3 normal = hit.Normal;
-    f32 refractive_index = 1.0f / material.RefractiveIndex;
-
-    if (!FrontFacing(incoming_ray, hit.Normal))
-    {
-        normal = -hit.Normal;
-        refractive_index = 1.0f / refractive_index;
-    }
+    f32 refractive_index = hit.FrontFacing ? (1.0f / material.RefractiveIndex) : material.RefractiveIndex;
 
     f32 cosine = std::clamp(Dot(-incoming_ray.Direction, normal), -1.0f, 1.0f);
 
@@ -135,6 +129,6 @@ ScatterPayload Scatter(Ray incoming_ray, const HitPayload &hit, Dielectric mater
     Vec3 direction = should_reflect ? Reflect(incoming_ray.Direction, normal)
                                     : Refract(cosine, incoming_ray.Direction, normal, refractive_index);
 
-    payload.Scattered = Ray{hit.Position, direction};
+    payload.Scattered = Ray{hit.Position, Normalized(direction)};
     return payload;
 }
