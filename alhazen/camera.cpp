@@ -62,7 +62,7 @@ Camera CreateCamera(Point3 position, Point3 target, Vec3 up, const CameraPropert
     Vec3 viewport_v = -viewport.Height * upward;
 
     Point3 viewport_center = position - focus_distance * forward;
-    Point3 viewport_upper_left = viewport_center - viewport_u / 2 - viewport_v / 2;
+    Point3 viewport_upper_left = viewport_center - viewport_u / 2.0f - viewport_v / 2.0f;
 
     f32 defocus_radius = focus_distance * std::tan(defocus_angle / 2.0f);
     Vec3 defocus_disk_u = defocus_radius * rightward;
@@ -73,7 +73,7 @@ Camera CreateCamera(Point3 position, Point3 target, Vec3 up, const CameraPropert
 
     camera.PixelDeltaU = viewport_u / (f32)image_width;
     camera.PixelDeltaV = viewport_v / (f32)image_height;
-    camera.PixelTopLeft = viewport_upper_left + 0.5 * (camera.PixelDeltaU + camera.PixelDeltaV);
+    camera.PixelTopLeft = viewport_upper_left + 0.5f * (camera.PixelDeltaU + camera.PixelDeltaV);
 
     camera.DefocusDiskAngle = defocus_angle;
     camera.DefocusDiskU = defocus_disk_u;
