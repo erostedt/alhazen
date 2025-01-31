@@ -17,10 +17,9 @@ Object CreateSphere(Point3 center, f32 radius, u32 material_index)
 f32 HitSphere(const Sphere &sphere, const Ray &r, Interval interval)
 {
     Vec3 oc = sphere.Center - r.Origin;
-    f32 a = SquaredLength(r.Direction);
     f32 h = Dot(r.Direction, oc);
     f32 c = SquaredLength(oc) - sphere.Radius * sphere.Radius;
-    f32 discriminant = h * h - a * c;
+    f32 discriminant = h * h - c;
 
     f32 miss = -1.0f;
     if (discriminant < 0.0f)
@@ -29,13 +28,13 @@ f32 HitSphere(const Sphere &sphere, const Ray &r, Interval interval)
     }
 
     f32 square_root_of_discriminant = std::sqrt(discriminant);
-    f32 closest_hit = (h - square_root_of_discriminant) / a;
+    f32 closest_hit = h - square_root_of_discriminant;
     if (interval.Surrounds(closest_hit))
     {
         return closest_hit;
     }
 
-    f32 further_hit = (h + square_root_of_discriminant) / a;
+    f32 further_hit = h + square_root_of_discriminant;
     if (interval.Surrounds(further_hit))
     {
         return further_hit;
