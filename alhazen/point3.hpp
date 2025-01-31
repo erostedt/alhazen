@@ -1,8 +1,8 @@
 #pragma once
 
 #include "types.hpp"
+#include "vec3.hpp"
 
-struct Vec3;
 struct Point3
 {
     f32 X;
@@ -10,9 +10,19 @@ struct Point3
     f32 Z;
 };
 
-Vec3 operator-(Point3 p, Point3 q);
+inline Vec3 operator-(Point3 p, Point3 q)
+{
+    return {p.X - q.X, p.Y - q.Y, p.Z - q.Z};
+}
 
-Point3 operator+(Point3 p, Vec3 v);
-Point3 operator-(Point3 p, Vec3 v);
+inline Point3 operator+(Point3 p, Vec3 v)
+{
+    return {p.X + v.X, p.Y + v.Y, p.Z + v.Z};
+}
+
+inline Point3 operator-(Point3 p, Vec3 v)
+{
+    return {p.X - v.X, p.Y - v.Y, p.Z - v.Z};
+}
 
 const Point3 ORIGIN = {0.0f, 0.0f, 0.0f};
