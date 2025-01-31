@@ -6,8 +6,14 @@ struct Interval
 {
     f32 LowerBound;
     f32 UpperBound;
-    bool Contains(f32 x) const;
-    bool Surrounds(f32 x) const;
-};
 
-Interval ZeroToInfinity();
+    inline bool Contains(f32 x) const
+    {
+        return (LowerBound <= x) && (x <= UpperBound);
+    }
+
+    inline bool Surrounds(f32 x) const
+    {
+        return (LowerBound < x) && (x < UpperBound);
+    }
+};
