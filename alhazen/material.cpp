@@ -116,7 +116,7 @@ static f32 Reflectance(f32 refractive_index, f32 cosine)
 ScatterPayload Scatter(Ray incoming_ray, const HitPayload &hit, Dielectric material)
 {
     ScatterPayload payload;
-    payload.Attenuation = Color{1.0f, 1.0f, 1.0f};
+    payload.Attenuation = WHITE;
 
     Vec3 normal = hit.Normal;
     f32 refractive_index = 1.0f / material.RefractiveIndex;
