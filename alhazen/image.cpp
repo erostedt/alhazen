@@ -24,6 +24,7 @@ void FreeImage(FloatImage *image)
 void WriteFloatImageToPPM(std::ostream &dst, FloatImage image)
 {
     dst << "P3\n" << image.Width << ' ' << image.Height << "\n255\n";
+    const f32 scale = 255.999f;
     for (u32 y = 0; y < image.Height; ++y)
     {
         for (u32 x = 0; x < image.Width; ++x)
@@ -31,9 +32,9 @@ void WriteFloatImageToPPM(std::ostream &dst, FloatImage image)
             const Color &rgb = image[x, y];
             Color gamma = LinearToGamma(rgb);
 
-            i32 r = std::clamp(i32(255.999f * gamma.Red), 0, 255);
-            i32 g = std::clamp(i32(255.999f * gamma.Green), 0, 255);
-            i32 b = std::clamp(i32(255.999f * gamma.Blue), 0, 255);
+            i32 r = i32(scale * std::clamp(gamma.Red, 0.0f, 1.0f));
+            i32 g = i32(scale * std::clamp(gamma.Green, 0.0f, 1.0f));
+            i32 b = i32(scale * std::clamp(gamma.Blue, 0.0f, 1.0f));
 
             dst << r << ' ' << g << ' ' << b << '\n';
         }
