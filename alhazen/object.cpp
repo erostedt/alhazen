@@ -66,8 +66,3 @@ Vec3 ObjectNormal(Point3 hit, const Object &obj)
     }
     std::unreachable();
 }
-
-Vec3 SphereNormal(Point3 hit, const Sphere &sphere)
-{
-    return (hit - sphere.Center) / sphere.Radius;
-}
