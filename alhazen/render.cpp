@@ -81,7 +81,7 @@ static Color RayColor(Ray r, const Scene &scene, u32 max_bounces)
     return BLACK;
 }
 
-Vec3 SampleUnitSquare()
+inline Vec3 SampleUnitSquare()
 {
     f32 x = UniformF32(-0.5f, 0.5f);
     f32 y = UniformF32(-0.5f, 0.5f);

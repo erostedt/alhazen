@@ -1,6 +1,8 @@
 #pragma once
 
+#include "random.hpp"
 #include "types.hpp"
+#include <cmath>
 
 struct Color
 {
@@ -8,22 +10,63 @@ struct Color
     f32 Green;
     f32 Blue;
 
-    Color &operator+=(const Color &rhs);
+    inline Color &operator+=(const Color &rhs) noexcept
+    {
+        Red += rhs.Red;
+        Green += rhs.Green;
+        Blue += rhs.Blue;
+        return *this;
+    }
 };
 
-Color LinearBlend(Color c1, Color c2, f32 a);
-Color LinearToGamma(Color c);
+inline Color operator+(Color c1, Color c2) noexcept
+{
+    return {c1.Red + c2.Red, c1.Green + c2.Green, c1.Blue + c2.Blue};
+}
 
-Color RandomColor();
-Color RandomColor(f32 min, f32 max);
+inline Color operator*(Color c1, Color c2) noexcept
+{
+    return {c1.Red * c2.Red, c1.Green * c2.Green, c1.Blue * c2.Blue};
+}
 
-Color operator+(Color c1, Color c2);
+inline Color operator*(Color c, f32 s) noexcept
+{
+    return {c.Red * s, c.Green * s, c.Blue * s};
+}
 
-Color operator*(Color c1, Color c2);
-Color operator*(Color c, f32 s);
-Color operator*(f32 s, Color c);
+inline Color operator*(f32 s, Color c) noexcept
+{
+    return c * s;
+}
 
-Color operator/(Color c, f32 s);
+inline Color operator/(Color c, f32 s) noexcept
+{
+    return {c.Red / s, c.Green / s, c.Blue / s};
+}
+
+inline Color LinearBlend(Color c1, Color c2, f32 a) noexcept
+{
+    return a * c1 + (1.0f - a) * c2;
+}
+
+inline Color LinearToGamma(Color c) noexcept
+{
+    Color gamma;
+    gamma.Red = std::pow(c.Red, 1.0f / 2.2f);
+    gamma.Green = std::pow(c.Green, 1.0f / 2.2f);
+    gamma.Blue = std::pow(c.Blue, 1.0f / 2.2f);
+    return gamma;
+}
+
+inline Color RandomColor()
+{
+    return {UniformF32(), UniformF32(), UniformF32()};
+}
+
+inline Color RandomColor(f32 min, f32 max)
+{
+    return {UniformF32(min, max), UniformF32(min, max), UniformF32(min, max)};
+}
 
 const Color BLACK = {0.0f, 0.0f, 0.0f};
 const Color WHITE = {1.0f, 1.0f, 1.0f};
