@@ -89,7 +89,7 @@ ScatterPayload Scatter(Ray incoming_ray, const HitPayload &hit, Metal material)
     Vec3 direction = Normalized(Reflect(incoming_ray.Direction, hit.Normal) + fuzziness);
     payload.Scattered = {hit.Position, direction};
     payload.Attenuation = material.Albedo;
-    payload.Absorbed = Dot(direction, hit.Normal) < 0;
+    payload.Absorbed = Dot(direction, hit.Normal) < 0.0f;
     return payload;
 }
 
