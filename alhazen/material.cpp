@@ -66,13 +66,13 @@ ScatterPayload Scatter(const HitPayload &hit, Lambertian material)
 {
     ScatterPayload payload;
 
-    Vec3 direction = hit.Normal + RandomUnitVector();
+    Vec3 direction = Normalized(hit.Normal) + RandomUnitVector();
     if (NearZero(direction))
     {
         direction = hit.Normal;
     }
 
-    payload.Scattered = {hit.Position, direction};
+    payload.Scattered = {hit.Position, Normalized(direction)};
     payload.Attenuation = material.Albedo;
     return payload;
 }
