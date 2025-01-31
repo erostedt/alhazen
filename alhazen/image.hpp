@@ -11,7 +11,7 @@ struct FloatImage
     u32 Height;
     Color *Pixels;
 
-    Color &operator[](u32 x, u32 y)
+    inline Color &operator[](u32 x, u32 y) noexcept
     {
         return Pixels[y * Width + x];
     }
