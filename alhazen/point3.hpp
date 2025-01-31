@@ -14,3 +14,5 @@ Vec3 operator-(Point3 p, Point3 q);
 
 Point3 operator+(Point3 p, Vec3 v);
 Point3 operator-(Point3 p, Vec3 v);
+
+const Point3 ORIGIN = {0.0f, 0.0f, 0.0f};

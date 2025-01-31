@@ -6,6 +6,7 @@
 #include "image.hpp"
 #include "material.hpp"
 #include "object.hpp"
+#include "point3.hpp"
 #include "random.hpp"
 #include "render.hpp"
 #include "vec3.hpp"
@@ -72,7 +73,7 @@ int main()
     props.DefocusAngleDegrees = 0.6f;
     props.FocusDistance = 10.0f;
 
-    const Camera camera = CreateCamera({13.0f, 2.0f, 3.0f}, {0.0f, 0.0f, 0.0f}, UP, props);
+    const Camera camera = CreateCamera({13.0f, 2.0f, 3.0f}, ORIGIN, UP, props);
     const u32 rays_per_pixel = 10;
     const u32 max_bounces = 20;
     FloatImage image = RenderImage(camera, scene, rays_per_pixel, max_bounces);
