@@ -90,9 +90,9 @@ bool NearZero(Vec3 v, f32 tolerance)
 
 Vec3 RandomUnitVector()
 {
+    Vec3 v;
     while (true)
     {
-        Vec3 v;
         v.X = UniformF32(-1.0f, 1.0f);
         v.Y = UniformF32(-1.0f, 1.0f);
         v.Z = UniformF32(-1.0f, 1.0f);
