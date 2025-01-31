@@ -25,5 +25,5 @@ Color operator*(f32 s, Color c);
 
 Color operator/(Color c, f32 s);
 
-const Color BLACK = {0, 0, 0};
-const Color WHITE = {1, 1, 1};
+const Color BLACK = {0.0f, 0.0f, 0.0f};
+const Color WHITE = {1.0f, 1.0f, 1.0f};
