@@ -44,7 +44,7 @@ f32 HitSphere(const Sphere &sphere, const Ray &r, Interval interval)
     return miss;
 }
 
-f32 HitObject(const Object &obj, const Ray &r, Interval interval)
+f32 HitObject(const Object &obj, const Ray &r, Interval interval) noexcept
 {
     switch (obj.Type)
     {
@@ -55,7 +55,12 @@ f32 HitObject(const Object &obj, const Ray &r, Interval interval)
     std::unreachable();
 }
 
-Vec3 ObjectNormal(Point3 hit, const Object &obj)
+inline Vec3 SphereNormal(Point3 hit, const Sphere &sphere) noexcept
+{
+    return (hit - sphere.Center) / sphere.Radius;
+}
+
+Vec3 ObjectNormal(Point3 hit, const Object &obj) noexcept
 {
 
     switch (obj.Type)
