@@ -10,4 +10,5 @@ struct HitPayload
     Vec3 Normal;
     f32 Distance;
     i32 ObjectIndex;
+    bool FrontFacing;
 };
