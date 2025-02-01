@@ -1,4 +1,5 @@
 #include "object.hpp"
+#include "interval.hpp"
 
 #include <cassert>
 #include <cmath>
@@ -11,6 +12,12 @@ Object CreateSphere(Point3 center, f32 radius, u32 material_index)
     obj.Type = ObjectType::SPHERE;
     obj.S = sphere;
     obj.MaterialIndex = material_index;
+
+    f32 padding = 1e-6f;
+    Point3 top_left = center - (radius + padding) * ONE;
+    Point3 bottom_right = center + (radius + padding) * ONE;
+
+    obj.BoundingBox = CreateBox(top_left, bottom_right);
     return obj;
 }
 
@@ -41,6 +48,36 @@ f32 HitSphere(const Sphere &sphere, const Ray &r, Interval interval)
     }
 
     return miss;
+}
+
+bool HitBox(const Box &box, const Ray &r, Interval interval)
+{
+    f32 hit1, hit2;
+    hit1 = (box.X.LowerBound - r.Origin.X) / r.Direction.X;
+    hit2 = (box.X.UpperBound - r.Origin.X) / r.Direction.X;
+    interval = Overlap(interval, CreateInterval(hit1, hit2));
+    if (interval.Empty())
+    {
+        return false;
+    }
+
+    hit1 = (box.Y.LowerBound - r.Origin.Y) / r.Direction.Y;
+    hit2 = (box.Y.UpperBound - r.Origin.Y) / r.Direction.Y;
+    interval = Overlap(interval, CreateInterval(hit1, hit2));
+    if (interval.Empty())
+    {
+        return false;
+    }
+
+    hit1 = (box.Z.LowerBound - r.Origin.Z) / r.Direction.Z;
+    hit2 = (box.Z.UpperBound - r.Origin.Z) / r.Direction.Z;
+    interval = Overlap(interval, CreateInterval(hit1, hit2));
+    if (interval.Empty())
+    {
+        return false;
+    }
+
+    return true;
 }
 
 f32 HitObject(const Object &obj, const Ray &r, Interval interval) noexcept

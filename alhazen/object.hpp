@@ -1,5 +1,6 @@
 #pragma once
 
+#include "box.hpp"
 #include "interval.hpp"
 #include "point3.hpp"
 #include "ray.hpp"
@@ -20,6 +21,7 @@ struct Object
 {
     ObjectType Type;
     u32 MaterialIndex;
+    Box BoundingBox;
     union {
         Sphere S;
     };
