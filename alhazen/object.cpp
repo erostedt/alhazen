@@ -80,6 +80,29 @@ bool HitBox(const Box &box, const Ray &r, Interval interval)
     return true;
 }
 
+f32 HitBVHNode(const BVHNode &node, const Ray &r, Interval interval)
+{
+    if (!HitBox(node.BoundingBox, r, interval))
+    {
+        return -1.0f;
+    }
+
+    f32 hit_left = HitBVHNode(*node.Left, r, interval);
+    f32 hit_right = HitBVHNode(*node.Right, r, interval);
+
+    if (hit_left < 0.0f)
+    {
+        return hit_right;
+    }
+
+    if (hit_right < 0.0f)
+    {
+        return hit_left;
+    }
+
+    return std::fmin(hit_left, hit_right);
+}
+
 f32 HitObject(const Object &obj, const Ray &r, Interval interval) noexcept
 {
     switch (obj.Type)

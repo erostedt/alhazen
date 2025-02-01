@@ -17,6 +17,14 @@ enum class ObjectType
     SPHERE
 };
 
+struct BVHNode
+{
+    BVHNode *Left;
+    BVHNode *Right;
+    Box BoundingBox;
+    i32 ObjectIndex;
+};
+
 struct Object
 {
     ObjectType Type;
