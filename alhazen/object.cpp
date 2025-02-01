@@ -13,9 +13,8 @@ Object CreateSphere(Point3 center, f32 radius, u32 material_index)
     obj.S = sphere;
     obj.MaterialIndex = material_index;
 
-    f32 padding = 1e-6f;
-    Point3 top_left = center - (radius + padding) * ONE;
-    Point3 bottom_right = center + (radius + padding) * ONE;
+    Point3 top_left = center - radius * ONE;
+    Point3 bottom_right = center + radius * ONE;
 
     obj.BoundingBox = CreateBox(top_left, bottom_right);
     return obj;
