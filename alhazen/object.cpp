@@ -71,23 +71,24 @@ bool HitBox(const Box &box, const Ray &r, Interval interval)
     hit1 = (box.Z.LowerBound - r.Origin.Z) / r.Direction.Z;
     hit2 = (box.Z.UpperBound - r.Origin.Z) / r.Direction.Z;
     interval = Overlap(interval, CreateInterval(hit1, hit2));
-    if (interval.Empty())
-    {
-        return false;
-    }
 
-    return true;
+    return !interval.Empty();
 }
 
-f32 HitBVHNode(const BVHNode &node, const Ray &r, Interval interval)
+f32 HitBVHNode(const BVHNode *node, const Ray &r, Interval interval)
 {
-    if (!HitBox(node.BoundingBox, r, interval))
+    if (!node)
     {
         return -1.0f;
     }
 
-    f32 hit_left = HitBVHNode(*node.Left, r, interval);
-    f32 hit_right = HitBVHNode(*node.Right, r, interval);
+    if (!HitBox(node->BoundingBox, r, interval))
+    {
+        return -1.0f;
+    }
+
+    f32 hit_left = HitBVHNode(node->Left, r, interval);
+    f32 hit_right = HitBVHNode(node->Right, r, interval);
 
     if (hit_left < 0.0f)
     {
