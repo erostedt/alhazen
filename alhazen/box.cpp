@@ -21,8 +21,8 @@ Box CreateBox(Point3 p, Point3 q)
 Box Expand(Box b1, Box b2)
 {
     Box merged;
-    merged.X = Range(b1.X, b2.X);
-    merged.Y = Range(b1.Y, b2.Y);
-    merged.Z = Range(b1.Z, b2.Z);
+    merged.X = Expand(b1.X, b2.X);
+    merged.Y = Expand(b1.Y, b2.Y);
+    merged.Z = Expand(b1.Z, b2.Z);
     return merged;
 }

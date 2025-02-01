@@ -32,7 +32,7 @@ inline Interval CreateInterval(f32 lower_bound, f32 upper_bound)
     return interval;
 }
 
-inline Interval Range(Interval i1, Interval i2) noexcept
+inline Interval Expand(Interval i1, Interval i2) noexcept
 {
     return {std::fmin(i1.LowerBound, i2.LowerBound), std::fmax(i1.UpperBound, i2.UpperBound)};
 }
