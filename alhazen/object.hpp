@@ -19,10 +19,10 @@ enum class ObjectType
 
 struct BVHNode
 {
-    BVHNode *Left;
-    BVHNode *Right;
+    i32 Left;
+    i32 Right;
     Box BoundingBox;
-    i32 ObjectIndex;
+    u32 ObjectIndex;
 };
 
 struct Object
