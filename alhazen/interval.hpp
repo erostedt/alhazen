@@ -32,3 +32,11 @@ inline Interval Expand(Interval i1, Interval i2) noexcept
     expanded.UpperBound = std::fmax(i1.UpperBound, i2.UpperBound);
     return expanded;
 }
+
+inline Interval Overlap(Interval i1, Interval i2)
+{
+    Interval overlap;
+    overlap.LowerBound = std::fmax(i1.LowerBound, i2.LowerBound);
+    overlap.UpperBound = std::fmin(i1.UpperBound, i2.UpperBound);
+    return overlap;
+}
