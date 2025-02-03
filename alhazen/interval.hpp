@@ -38,8 +38,8 @@ struct Interval
     inline static Interval Empty() noexcept
     {
         Interval interval;
-        interval.LowerBound = -std::numeric_limits<f32>::infinity();
-        interval.UpperBound = std::numeric_limits<f32>::infinity();
+        interval.LowerBound = +std::numeric_limits<f32>::infinity();
+        interval.UpperBound = -std::numeric_limits<f32>::infinity();
         return interval;
     }
 };
