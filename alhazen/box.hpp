@@ -8,6 +8,15 @@ struct Box
     Interval XAxis;
     Interval YAxis;
     Interval ZAxis;
+
+    inline static Box Empty()
+    {
+        Box empty;
+        empty.XAxis = Interval::Empty();
+        empty.YAxis = Interval::Empty();
+        empty.YAxis = Interval::Empty();
+        return empty;
+    }
 };
 
 inline Box CreateBox(Point3 p, Point3 q)

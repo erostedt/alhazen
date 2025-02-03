@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <limits>
 
 #include "types.hpp"
 
@@ -22,6 +23,13 @@ struct Interval
     inline bool IsEmpty() const noexcept
     {
         return LowerBound > UpperBound;
+    }
+    inline static Interval Empty()
+    {
+        Interval interval;
+        interval.LowerBound = -std::numeric_limits<f32>::infinity();
+        interval.UpperBound = std::numeric_limits<f32>::infinity();
+        return interval;
     }
 };
 
