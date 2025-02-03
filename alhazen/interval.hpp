@@ -30,6 +30,11 @@ struct Interval
         return std::fmax(UpperBound - LowerBound, 0.0f);
     }
 
+    inline f32 Midpoint() const noexcept
+    {
+        return 0.5f * (UpperBound + LowerBound); // Check if valid?
+    }
+
     inline static Interval Empty() noexcept
     {
         Interval interval;
