@@ -1,4 +1,5 @@
 #include "object.hpp"
+#include "box.hpp"
 
 #include <cassert>
 #include <cmath>
@@ -11,6 +12,10 @@ Object CreateSphere(Point3 center, f32 radius, u32 material_index)
     obj.Type = ObjectType::SPHERE;
     obj.S = sphere;
     obj.MaterialIndex = material_index;
+
+    Point3 p = center - radius * ONE;
+    Point3 q = center + radius * ONE;
+    obj.BoundingBox = CreateBox(p, q);
     return obj;
 }
 
