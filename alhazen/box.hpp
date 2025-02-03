@@ -19,6 +19,15 @@ struct Box
         return empty;
     }
 
+    inline Point3 Center() const noexcept
+    {
+        Point3 center;
+        center.X = XAxis.Midpoint();
+        center.Y = YAxis.Midpoint();
+        center.Z = ZAxis.Midpoint();
+        return center;
+    }
+
     inline u32 LongestAxis()
     {
         if (XAxis.Width() > YAxis.Width() && XAxis.Width() > ZAxis.Width())
