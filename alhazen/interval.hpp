@@ -24,7 +24,13 @@ struct Interval
     {
         return LowerBound > UpperBound;
     }
-    inline static Interval Empty()
+
+    inline f32 Width() const noexcept
+    {
+        return std::fmax(UpperBound - LowerBound, 0.0f);
+    }
+
+    inline static Interval Empty() noexcept
     {
         Interval interval;
         interval.LowerBound = -std::numeric_limits<f32>::infinity();
