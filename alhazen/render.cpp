@@ -2,7 +2,10 @@
 
 #include <iostream>
 #include <limits>
+#include <vector>
 
+#include "box.hpp"
+#include "bvh.hpp"
 #include "camera.hpp"
 #include "color.hpp"
 #include "hit_payload.hpp"
@@ -38,6 +41,73 @@ static HitPayload TraceRay(const std::vector<Object> &objects, const Ray &r, Int
     }
 
     Object obj = objects[(sz)closest_object_index];
+
+    payload.Distance = closest_hit;
+    payload.ObjectIndex = closest_object_index;
+    payload.Position = r.At(closest_hit);
+    payload.Normal = ObjectNormal(payload.Position, obj);
+    payload.FrontFacing = FrontFacing(r, payload.Normal);
+    if (!payload.FrontFacing)
+    {
+        payload.Normal = -payload.Normal;
+    }
+    return payload;
+}
+
+static HitPayload TraceRayBVH(const BVH &bvh, const Ray &r, Interval interval)
+{
+    std::vector<u16> stack;
+    stack.reserve(50);
+    stack.push_back(0);
+
+    i32 closest_object_index = -1;
+    f32 closest_hit = std::numeric_limits<f32>::max();
+
+    while (!stack.empty())
+    {
+        u16 node_index = stack.back();
+        stack.pop_back();
+
+        const BVHNode &node = bvh.Nodes[(sz)node_index];
+
+        if (!HitsBox(node.BoundingBox, r, interval))
+        {
+            continue;
+        }
+
+        if (node.IsLeaf())
+        {
+            const Object &obj = bvh.Objects[(sz)node.ObjectIndex];
+            f32 hit = HitObject(obj, r, interval);
+            if (interval.Surrounds(hit) && hit < closest_hit)
+            {
+                closest_object_index = node.ObjectIndex;
+                closest_hit = hit;
+            }
+            continue;
+        }
+
+        if (SquaredLength(bvh.Nodes[node.Left].BoundingBox.Center() - r.Origin) <
+            SquaredLength(bvh.Nodes[node.Right].BoundingBox.Center() - r.Origin))
+        {
+            stack.push_back(node.Right);
+            stack.push_back(node.Left);
+        }
+        else
+        {
+            stack.push_back(node.Left);
+            stack.push_back(node.Right);
+        }
+    }
+
+    HitPayload payload;
+    if (closest_object_index < 0)
+    {
+        payload.ObjectIndex = -1;
+        return payload;
+    }
+
+    const Object &obj = bvh.Objects[(sz)closest_object_index];
 
     payload.Distance = closest_hit;
     payload.ObjectIndex = closest_object_index;
