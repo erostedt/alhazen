@@ -40,3 +40,11 @@ inline Interval Overlap(Interval i1, Interval i2)
     overlap.UpperBound = std::fmin(i1.UpperBound, i2.UpperBound);
     return overlap;
 }
+
+inline Interval CreateInterval(f32 lower_bound, f32 upper_bound)
+{
+    Interval interval;
+    interval.LowerBound = std::fmin(lower_bound, upper_bound);
+    interval.UpperBound = std::fmax(lower_bound, upper_bound);
+    return interval;
+}
