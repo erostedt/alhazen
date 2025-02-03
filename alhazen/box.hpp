@@ -17,6 +17,21 @@ struct Box
         empty.YAxis = Interval::Empty();
         return empty;
     }
+
+    inline u32 LongestAxis()
+    {
+        if (XAxis.Width() > YAxis.Width() && XAxis.Width() > ZAxis.Width())
+        {
+            return 0;
+        }
+
+        if (YAxis.Width() > ZAxis.Width())
+        {
+            return 1;
+        }
+
+        return 2;
+    }
 };
 
 inline Box CreateBox(Point3 p, Point3 q)
