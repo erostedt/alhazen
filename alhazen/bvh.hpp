@@ -12,8 +12,8 @@ struct BVHNode
 {
     Box BoundingBox;
     i32 ObjectIndex = -1;
-    u16 Left;
-    u16 Right;
+    u32 Left;
+    u32 Right;
 
     inline bool IsLeaf() const noexcept
     {
@@ -27,14 +27,14 @@ struct BVH
     std::vector<Object> Objects;
 };
 
-static u16 BuildBVH(BVH &bvh, std::span<u32> indices)
+static u32 BuildBVH(BVH &bvh, std::span<u32> indices)
 {
     std::vector<BVHNode> &nodes = bvh.Nodes;
 
     if (indices.size() == 1)
     {
         u32 object_index = indices.front();
-        u16 node_index = (u16)nodes.size();
+        u32 node_index = (u32)nodes.size();
         Box &box = bvh.Objects[object_index].BoundingBox;
         nodes.emplace_back(box, object_index, 0, 0);
         return node_index;
@@ -72,7 +72,7 @@ static u16 BuildBVH(BVH &bvh, std::span<u32> indices)
     std::span<u32> left_indices = indices.subspan(0, mid);
     std::span<u32> right_indices = indices.subspan(mid);
 
-    u16 node_index = (u16)nodes.size();
+    u32 node_index = (u32)nodes.size();
     BVHNode &node = nodes.emplace_back(box, -1, 0, 0);
     node.Left = BuildBVH(bvh, left_indices);
     node.Right = BuildBVH(bvh, right_indices);

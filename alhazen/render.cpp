@@ -56,7 +56,7 @@ static HitPayload TraceRay(const std::vector<Object> &objects, const Ray &r, Int
 
 static HitPayload TraceRayBVH(const BVH &bvh, const Ray &r, Interval interval)
 {
-    std::vector<u16> stack;
+    std::vector<u32> stack;
     stack.reserve(50);
     stack.push_back(0);
 
@@ -65,7 +65,7 @@ static HitPayload TraceRayBVH(const BVH &bvh, const Ray &r, Interval interval)
 
     while (!stack.empty())
     {
-        u16 node_index = stack.back();
+        u32 node_index = stack.back();
         stack.pop_back();
 
         const BVHNode &node = bvh.Nodes[(sz)node_index];
