@@ -19,43 +19,6 @@
 #include "types.hpp"
 #include "vec3.hpp"
 
-/*
-static HitPayload TraceRay(const std::vector<Object> &objects, const Ray &r, Interval interval)
-{
-    i32 closest_object_index = -1;
-    f32 closest_hit = std::numeric_limits<f32>::max();
-    for (sz i = 0; i < objects.size(); ++i)
-    {
-        f32 hit = HitObject(objects[i], r, interval);
-        if (interval.Surrounds(hit) && hit < closest_hit)
-        {
-            closest_object_index = (i32)i;
-            closest_hit = hit;
-        }
-    }
-
-    HitPayload payload;
-    if (closest_object_index < 0)
-    {
-        payload.ObjectIndex = -1;
-        return payload;
-    }
-
-    Object obj = objects[(sz)closest_object_index];
-
-    payload.Distance = closest_hit;
-    payload.ObjectIndex = closest_object_index;
-    payload.Position = r.At(closest_hit);
-    payload.Normal = ObjectNormal(payload.Position, obj);
-    payload.FrontFacing = FrontFacing(r, payload.Normal);
-    if (!payload.FrontFacing)
-    {
-        payload.Normal = -payload.Normal;
-    }
-    return payload;
-}
-*/
-
 static HitPayload TraceRayBVH(const BVH &bvh, const Ray &r, Interval interval)
 {
     std::vector<u32> stack;
@@ -138,7 +101,7 @@ static Color RayColor(Ray r, const Scene &scene, u32 max_bounces)
             return color * LinearBlend(light_blue, white, a);
         }
 
-        u32 material_index = scene.Objects[(sz)hit.ObjectIndex].MaterialIndex;
+        u32 material_index = scene.Bvh.Objects[(sz)hit.ObjectIndex].MaterialIndex;
         ScatterPayload scatter = Scatter(r, hit, scene.Materials[material_index]);
         if (scatter.Absorbed)
         {
