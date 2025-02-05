@@ -15,7 +15,7 @@ struct Box
         Box empty;
         empty.XAxis = Interval::Empty();
         empty.YAxis = Interval::Empty();
-        empty.YAxis = Interval::Empty();
+        empty.ZAxis = Interval::Empty();
         return empty;
     }
 
