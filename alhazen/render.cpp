@@ -51,17 +51,8 @@ static HitPayload TraceRayBVH(const BVH &bvh, const Ray &r, Interval interval)
             continue;
         }
 
-        if (SquaredLength(bvh.Nodes[node.Left].BoundingBox.Center() - r.Origin) <
-            SquaredLength(bvh.Nodes[node.Right].BoundingBox.Center() - r.Origin))
-        {
-            stack.push_back(node.Right);
-            stack.push_back(node.Left);
-        }
-        else
-        {
-            stack.push_back(node.Left);
-            stack.push_back(node.Right);
-        }
+        stack.push_back(node.Left);
+        stack.push_back(node.Right);
     }
 
     HitPayload payload;
