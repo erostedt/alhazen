@@ -78,11 +78,11 @@ static HitPayload TraceRayBVH(const BVH &bvh, const Ray &r, Interval interval)
 
         if (node.IsLeaf())
         {
-            const Object &obj = bvh.Objects[(sz)node.ObjectIndex];
+            const Object &obj = bvh.Objects[(sz)node.ObjectIndex()];
             f32 hit = HitObject(obj, r, interval);
             if (interval.Surrounds(hit))
             {
-                closest_object_index = node.ObjectIndex;
+                closest_object_index = (i32)node.ObjectIndex();
                 interval.UpperBound = hit;
             }
             continue;
