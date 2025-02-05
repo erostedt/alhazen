@@ -64,27 +64,48 @@ inline Box Expand(const Box &b1, const Box &b2)
 
 inline bool HitsBox(const Box &box, const Ray &ray, Interval interval) noexcept
 {
-    f32 hit1 = (box.XAxis.LowerBound - ray.Origin.X) / ray.Direction.X;
-    f32 hit2 = (box.XAxis.UpperBound - ray.Origin.X) / ray.Direction.X;
-    Interval axis = CreateInterval(hit1, hit2);
-    interval = Overlap(axis, interval);
-    if (interval.IsEmpty())
+    f32 bound_min, bound_max;
+    f32 t_min, t_max;
+
+    f32 xscl = 1.0f / ray.Direction.X;
+    bound_min = (box.XAxis.LowerBound - ray.Origin.X) * xscl;
+    bound_max = (box.XAxis.UpperBound - ray.Origin.X) * xscl;
+
+    t_min = std::min(bound_min, bound_max);
+    t_max = std::max(bound_min, bound_max);
+
+    interval.LowerBound = std::max(t_min, interval.LowerBound);
+    interval.UpperBound = std::min(t_max, interval.UpperBound);
+
+    if (interval.LowerBound > interval.UpperBound)
     {
         return false;
     }
 
-    hit1 = (box.YAxis.LowerBound - ray.Origin.Y) / ray.Direction.Y;
-    hit2 = (box.YAxis.UpperBound - ray.Origin.Y) / ray.Direction.Y;
-    axis = CreateInterval(hit1, hit2);
-    interval = Overlap(axis, interval);
-    if (interval.IsEmpty())
+    f32 yscl = 1.0f / ray.Direction.Y;
+    bound_min = (box.YAxis.LowerBound - ray.Origin.Y) * yscl;
+    bound_max = (box.YAxis.UpperBound - ray.Origin.Y) * yscl;
+
+    t_min = std::min(bound_min, bound_max);
+    t_max = std::max(bound_min, bound_max);
+
+    interval.LowerBound = std::max(t_min, interval.LowerBound);
+    interval.UpperBound = std::min(t_max, interval.UpperBound);
+
+    if (interval.LowerBound > interval.UpperBound)
     {
         return false;
     }
 
-    hit1 = (box.ZAxis.LowerBound - ray.Origin.Z) / ray.Direction.Z;
-    hit2 = (box.ZAxis.UpperBound - ray.Origin.Z) / ray.Direction.Z;
-    axis = CreateInterval(hit1, hit2);
-    interval = Overlap(axis, interval);
-    return !interval.IsEmpty();
+    f32 zscl = 1.0f / ray.Direction.Z;
+    bound_min = (box.ZAxis.LowerBound - ray.Origin.Z) * zscl;
+    bound_max = (box.ZAxis.UpperBound - ray.Origin.Z) * zscl;
+
+    t_min = std::min(bound_min, bound_max);
+    t_max = std::max(bound_min, bound_max);
+
+    interval.LowerBound = std::max(t_min, interval.LowerBound);
+    interval.UpperBound = std::min(t_max, interval.UpperBound);
+
+    return interval.LowerBound <= interval.UpperBound;
 }
