@@ -47,8 +47,8 @@ struct Interval
 inline Interval Expand(Interval i1, Interval i2) noexcept
 {
     Interval expanded;
-    expanded.LowerBound = std::fmin(i1.LowerBound, i2.LowerBound);
-    expanded.UpperBound = std::fmax(i1.UpperBound, i2.UpperBound);
+    expanded.LowerBound = std::min(i1.LowerBound, i2.LowerBound);
+    expanded.UpperBound = std::max(i1.UpperBound, i2.UpperBound);
     return expanded;
 }
 
