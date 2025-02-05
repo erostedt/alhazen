@@ -19,6 +19,7 @@
 #include "types.hpp"
 #include "vec3.hpp"
 
+/*
 static HitPayload TraceRay(const std::vector<Object> &objects, const Ray &r, Interval interval)
 {
     i32 closest_object_index = -1;
@@ -53,15 +54,15 @@ static HitPayload TraceRay(const std::vector<Object> &objects, const Ray &r, Int
     }
     return payload;
 }
+*/
 
 static HitPayload TraceRayBVH(const BVH &bvh, const Ray &r, Interval interval)
 {
     std::vector<u32> stack;
-    stack.reserve(50);
+    stack.reserve(bvh.Objects.size());
     stack.push_back(0);
 
     i32 closest_object_index = -1;
-    f32 closest_hit = std::numeric_limits<f32>::max();
 
     while (!stack.empty())
     {
@@ -79,10 +80,10 @@ static HitPayload TraceRayBVH(const BVH &bvh, const Ray &r, Interval interval)
         {
             const Object &obj = bvh.Objects[(sz)node.ObjectIndex];
             f32 hit = HitObject(obj, r, interval);
-            if (interval.Surrounds(hit) && hit < closest_hit)
+            if (interval.Surrounds(hit))
             {
                 closest_object_index = node.ObjectIndex;
-                closest_hit = hit;
+                interval.UpperBound = hit;
             }
             continue;
         }
@@ -109,9 +110,9 @@ static HitPayload TraceRayBVH(const BVH &bvh, const Ray &r, Interval interval)
 
     const Object &obj = bvh.Objects[(sz)closest_object_index];
 
-    payload.Distance = closest_hit;
+    payload.Distance = interval.UpperBound;
     payload.ObjectIndex = closest_object_index;
-    payload.Position = r.At(closest_hit);
+    payload.Position = r.At(interval.UpperBound);
     payload.Normal = ObjectNormal(payload.Position, obj);
     payload.FrontFacing = FrontFacing(r, payload.Normal);
     if (!payload.FrontFacing)
@@ -127,7 +128,7 @@ static Color RayColor(Ray r, const Scene &scene, u32 max_bounces)
     while (max_bounces > 0)
     {
         Interval interval = {0.001f, std::numeric_limits<f32>::infinity()};
-        const HitPayload hit = TraceRay(scene.Objects, r, interval);
+        const HitPayload hit = TraceRayBVH(scene.Bvh, r, interval);
         if (hit.ObjectIndex < 0)
         {
             Vec3 v = r.Direction;
