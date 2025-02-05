@@ -4,7 +4,7 @@ project(alhazen)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_FLAGS
-    "-Wall -pedantic -Wextra -Werror -Wshadow -Wsign-conversion -Wconversion -Wunreachable-code"
+    "-Wall -pedantic -Wextra -Werror -Wshadow -Wsign-conversion -Wconversion -Wunreachable-code -g"
 )
 set(SRC_DIR ${PROJECT_SOURCE_DIR}/alhazen)
 set(EXAMPLES_PATH ${PROJECT_SOURCE_DIR}/examples)
