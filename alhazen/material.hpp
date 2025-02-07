@@ -14,6 +14,8 @@ struct ScatterPayload
 struct Material;
 typedef ScatterPayload (*ScatterFunction)(const Material &material, const Ray &incoming_ray, const HitPayload &hit);
 
+namespace MaterialTypes
+{
 struct Lambertian
 {
     Color Albedo;
@@ -29,13 +31,14 @@ struct Dielectric
 {
     f32 RefractiveIndex;
 };
+} // namespace MaterialTypes
 
 struct Material
 {
     union {
-        Lambertian L;
-        Metal M;
-        Dielectric D;
+        MaterialTypes::Lambertian Lambertian;
+        MaterialTypes::Metal Metal;
+        MaterialTypes::Dielectric Dielectric;
     };
     ScatterFunction Scatter;
 };

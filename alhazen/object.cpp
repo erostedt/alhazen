@@ -4,9 +4,10 @@
 #include <cassert>
 #include <cmath>
 
+using namespace ObjectTypes;
 static f32 SphereHit(const Object &object, const Ray &r, Interval interval)
 {
-    const Sphere &sphere = object.S;
+    const Sphere &sphere = object.Sphere;
     Vec3 oc = sphere.Center - r.Origin;
     f32 h = Dot(r.Direction, oc);
     f32 c = SquaredLength(oc) - sphere.Radius * sphere.Radius;
@@ -36,15 +37,15 @@ static f32 SphereHit(const Object &object, const Ray &r, Interval interval)
 
 inline Vec3 SphereNormal(const Object &object, const Point3 &hit) noexcept
 {
-    const Sphere &sphere = object.S;
+    const Sphere &sphere = object.Sphere;
     return (hit - sphere.Center) / sphere.Radius;
 }
 
 Object CreateSphere(Point3 center, f32 radius, u32 material_index)
 {
-    Sphere sphere{center, radius};
+    Sphere sphere = {center, radius};
     Object obj;
-    obj.S = sphere;
+    obj.Sphere = sphere;
     obj.MaterialIndex = material_index;
 
     Point3 p = center - radius * ONE;

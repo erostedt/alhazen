@@ -9,6 +9,8 @@
 #include "ray.hpp"
 #include "vec3.hpp"
 
+using namespace MaterialTypes;
+
 inline Vec3 Reflect(Vec3 v, Vec3 normal)
 {
     return v - 2.0f * Dot(v, normal) * normal;
@@ -46,14 +48,14 @@ static ScatterPayload ScatterLambertian(const Material &material, const Ray &inc
     }
 
     payload.Scattered = {hit.Position, Normalized(direction)};
-    payload.Attenuation = material.L.Albedo;
+    payload.Attenuation = material.Lambertian.Albedo;
     return payload;
 }
 
 static ScatterPayload ScatterMetal(const Material &material, const Ray &incoming_ray, const HitPayload &hit)
 {
     ScatterPayload payload;
-    const auto &metal = material.M;
+    const Metal &metal = material.Metal;
     Vec3 fuzziness = metal.FuzzFactor * RandomUnitVector();
     Vec3 direction = Reflect(incoming_ray.Direction, hit.Normal) + fuzziness;
     payload.Scattered = {hit.Position, Normalized(direction)};
@@ -68,7 +70,7 @@ static ScatterPayload ScatterDielectric(const Material &material, const Ray &inc
     payload.Attenuation = WHITE;
 
     Vec3 normal = hit.Normal;
-    f32 refractive_index = material.D.RefractiveIndex;
+    f32 refractive_index = material.Dielectric.RefractiveIndex;
     refractive_index = hit.FrontFacing ? (1.0f / refractive_index) : refractive_index;
 
     f32 cosine = std::clamp(Dot(-incoming_ray.Direction, normal), -1.0f, 1.0f);
@@ -89,7 +91,7 @@ Material CreateLambertian(Color albedo)
     lambertian.Albedo = albedo;
 
     Material material;
-    material.L = lambertian;
+    material.Lambertian = lambertian;
     material.Scatter = ScatterLambertian;
     return material;
 }
@@ -101,7 +103,7 @@ Material CreateMetal(Color albedo, f32 fuzz_factor)
     metal.FuzzFactor = fuzz_factor;
 
     Material material;
-    material.M = metal;
+    material.Metal = metal;
     material.Scatter = ScatterMetal;
     return material;
 }
@@ -112,7 +114,7 @@ Material CreateDielectric(f32 refractive_index)
     dielectric.RefractiveIndex = refractive_index;
 
     Material material;
-    material.D = dielectric;
+    material.Dielectric = dielectric;
     material.Scatter = ScatterDielectric;
     return material;
 }
