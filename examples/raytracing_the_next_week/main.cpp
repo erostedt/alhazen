@@ -10,6 +10,7 @@
 #include "point3.hpp"
 #include "random.hpp"
 #include "render.hpp"
+#include "texture.hpp"
 #include "vec3.hpp"
 
 int main()
@@ -20,8 +21,8 @@ int main()
     std::vector<Object> objects;
     objects.reserve(500);
 
-    materials.push_back(CreateLambertian({0.5f, 0.5f, 0.5f}));
     objects.push_back(CreateStationarySpere({0.0f, -1000.0f, 0.0f}, 1000.0f, 0));
+    materials.push_back(CreateLambertian(CreateCheckerTexture(0.32f, {0.2f, 0.3f, 0.1f}, {0.9f, 0.9f, 0.9f})));
 
     for (int a = -11; a < 11; ++a)
     {
@@ -64,7 +65,7 @@ int main()
     materials.push_back(CreateDielectric(1.5f));
 
     objects.push_back(CreateStationarySpere({-4.0f, 1.0f, 0.0f}, 1.0f, (u32)materials.size()));
-    materials.push_back(CreateLambertian({0.4f, 0.2f, 0.1f}));
+    materials.push_back(CreateLambertian(Color{0.4f, 0.2f, 0.1f}));
 
     objects.push_back(CreateStationarySpere({4.0f, 1.0f, 0.0f}, 1.0f, (u32)materials.size()));
     materials.push_back(CreateMetal({0.7f, 0.6f, 0.5f}, 0.0f));
@@ -73,14 +74,14 @@ int main()
     const Scene scene = {std::move(materials), std::move(bvh)};
 
     CameraProperties props;
-    props.ImageWidth = 400;
+    props.ImageWidth = 800;
     props.VFOVDegrees = 20.0f;
     props.DefocusAngleDegrees = 0.6f;
     props.FocusDistance = 10.0f;
 
     const Camera camera = CreateCamera({13.0f, 2.0f, 3.0f}, ORIGIN, UP, props);
-    const u32 rays_per_pixel = 100;
-    const u32 max_bounces = 50;
+    const u32 rays_per_pixel = 20;
+    const u32 max_bounces = 10;
     auto image = RenderImage(camera, scene, rays_per_pixel, max_bounces);
     WriteFloatImageToPPM(std::cout, image);
 }

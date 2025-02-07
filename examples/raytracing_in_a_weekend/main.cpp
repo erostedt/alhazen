@@ -20,7 +20,7 @@ int main()
     std::vector<Object> objects;
     objects.reserve(500);
 
-    materials.push_back(CreateLambertian({0.5f, 0.5f, 0.5f}));
+    materials.push_back(CreateLambertian(Color{0.5f, 0.5f, 0.5f}));
     objects.push_back(CreateStationarySpere({0.0f, -1000.0f, 0.0f}, 1000.0f, 0));
 
     for (int a = -11; a < 11; ++a)
@@ -61,7 +61,7 @@ int main()
     materials.push_back(CreateDielectric(1.5f));
 
     objects.push_back(CreateStationarySpere({-4.0f, 1.0f, 0.0f}, 1.0f, (u32)materials.size()));
-    materials.push_back(CreateLambertian({0.4f, 0.2f, 0.1f}));
+    materials.push_back(CreateLambertian(Color{0.4f, 0.2f, 0.1f}));
 
     objects.push_back(CreateStationarySpere({4.0f, 1.0f, 0.0f}, 1.0f, (u32)materials.size()));
     materials.push_back(CreateMetal({0.7f, 0.6f, 0.5f}, 0.0f));

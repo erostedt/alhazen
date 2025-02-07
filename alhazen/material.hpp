@@ -3,6 +3,7 @@
 #include "color.hpp"
 #include "hit_payload.hpp"
 #include "ray.hpp"
+#include "texture.hpp"
 
 struct ScatterPayload
 {
@@ -18,7 +19,7 @@ namespace MaterialTypes
 {
 struct Lambertian
 {
-    Color Albedo;
+    Texture Tex;
 };
 
 struct Metal
@@ -43,6 +44,8 @@ struct Material
     ScatterFunction Scatter;
 };
 
+Material CreateLambertian(const Texture &texture);
 Material CreateLambertian(Color albedo);
+
 Material CreateMetal(Color albedo, f32 fuzz_factor);
 Material CreateDielectric(f32 refractive_index);

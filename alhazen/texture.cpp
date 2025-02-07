@@ -23,7 +23,7 @@ static Color SampleCheckerTexture(const Texture &texture, f32 u, f32 v, const Po
 
     bool is_even = (x + y + z) % 2 == 0;
 
-    return is_even ? checker_texture.EvenColor.Albedo : checker_texture.OddColor.Albedo;
+    return is_even ? checker_texture.EvenColor : checker_texture.OddColor;
 }
 
 Texture CreateSolidColor(Color albedo)
@@ -35,7 +35,7 @@ Texture CreateSolidColor(Color albedo)
     return texture;
 }
 
-Texture CreateCheckerTexture(f32 scale, const SolidColor &even_color, const SolidColor &odd_color)
+Texture CreateCheckerTexture(f32 scale, const Color &even_color, const Color &odd_color)
 {
     CheckerTexture checker_texture = {1.0f / scale, even_color, odd_color};
     Texture texture;

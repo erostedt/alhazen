@@ -7,6 +7,7 @@
 #include "color.hpp"
 #include "random.hpp"
 #include "ray.hpp"
+#include "texture.hpp"
 #include "vec3.hpp"
 
 using namespace MaterialTypes;
@@ -48,7 +49,8 @@ static ScatterPayload ScatterLambertian(const Material &material, const Ray &inc
     }
 
     payload.Scattered = {hit.Position, Normalized(direction), incoming_ray.Time};
-    payload.Attenuation = material.Lambertian.Albedo;
+    const Texture &texture = material.Lambertian.Tex;
+    payload.Attenuation = texture.Sample(texture, hit.U, hit.V, hit.Position);
     return payload;
 }
 
@@ -85,15 +87,20 @@ static ScatterPayload ScatterDielectric(const Material &material, const Ray &inc
     return payload;
 }
 
-Material CreateLambertian(Color albedo)
+Material CreateLambertian(const Texture &texture)
 {
     Lambertian lambertian;
-    lambertian.Albedo = albedo;
+    lambertian.Tex = texture;
 
     Material material;
     material.Lambertian = lambertian;
     material.Scatter = ScatterLambertian;
     return material;
+}
+
+Material CreateLambertian(Color albedo)
+{
+    return CreateLambertian(CreateSolidColor(albedo));
 }
 
 Material CreateMetal(Color albedo, f32 fuzz_factor)

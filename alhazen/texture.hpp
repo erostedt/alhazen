@@ -15,8 +15,8 @@ struct SolidColor
 struct CheckerTexture
 {
     f32 InverseScale;
-    SolidColor EvenColor;
-    SolidColor OddColor;
+    Color EvenColor;
+    Color OddColor;
 };
 
 }; // namespace TextureTypes
@@ -34,4 +34,4 @@ struct Texture
 };
 
 Texture CreateSolidColor(Color albedo);
-Texture CreateCheckerTexture(Color albedo);
+Texture CreateCheckerTexture(f32 scale, const Color &even_color, const Color &odd_color);
