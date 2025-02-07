@@ -42,7 +42,7 @@ static HitPayload TraceRayBVH(const BVH &bvh, const Ray &r, Interval interval)
         if (node.IsLeaf())
         {
             const Object &obj = bvh.Objects[(sz)node.ObjectIndex()];
-            f32 hit = HitObject(obj, r, interval);
+            f32 hit = obj.Hit(obj, r, interval);
             if (interval.Surrounds(hit))
             {
                 closest_object_index = (i32)node.ObjectIndex();
@@ -67,7 +67,7 @@ static HitPayload TraceRayBVH(const BVH &bvh, const Ray &r, Interval interval)
     payload.Distance = interval.UpperBound;
     payload.ObjectIndex = closest_object_index;
     payload.Position = r.At(interval.UpperBound);
-    payload.Normal = ObjectNormal(payload.Position, obj);
+    payload.Normal = obj.Normal(obj, payload.Position);
     payload.FrontFacing = FrontFacing(r, payload.Normal);
     if (!payload.FrontFacing)
     {
@@ -93,7 +93,9 @@ static Color RayColor(Ray r, const Scene &scene, u32 max_bounces)
         }
 
         u32 material_index = scene.Bvh.Objects[(sz)hit.ObjectIndex].MaterialIndex;
-        ScatterPayload scatter = Scatter(r, hit, scene.Materials[material_index]);
+        const Material &material = scene.Materials[material_index];
+        const ScatterFunction &Scatter = material.Scatter;
+        ScatterPayload scatter = Scatter(material, r, hit);
         if (scatter.Absorbed)
         {
             return BLACK;

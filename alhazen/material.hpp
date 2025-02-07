@@ -11,6 +11,9 @@ struct ScatterPayload
     bool Absorbed = false;
 };
 
+struct Material;
+typedef ScatterPayload (*ScatterFunction)(const Material &material, const Ray &incoming_ray, const HitPayload &hit);
+
 struct Lambertian
 {
     Color Albedo;
@@ -27,25 +30,16 @@ struct Dielectric
     f32 RefractiveIndex;
 };
 
-enum class MaterialType
-{
-    LAMBERTIAN,
-    METAL,
-    DIELECTRIC,
-};
-
 struct Material
 {
-    MaterialType Type;
     union {
         Lambertian L;
         Metal M;
         Dielectric D;
     };
+    ScatterFunction Scatter;
 };
 
 Material CreateLambertian(Color albedo);
 Material CreateMetal(Color albedo, f32 fuzz_factor);
 Material CreateDielectric(f32 refractive_index);
-
-ScatterPayload Scatter(Ray incoming_ray, const HitPayload &hit, Material material);

@@ -3,46 +3,11 @@
 #include <algorithm>
 #include <cassert>
 #include <cmath>
-#include <utility>
 
 #include "color.hpp"
 #include "random.hpp"
 #include "ray.hpp"
 #include "vec3.hpp"
-
-Material CreateLambertian(Color albedo)
-{
-    Lambertian lambertian;
-    lambertian.Albedo = albedo;
-
-    Material material;
-    material.Type = MaterialType::LAMBERTIAN;
-    material.L = lambertian;
-    return material;
-}
-
-Material CreateMetal(Color albedo, f32 fuzz_factor)
-{
-    Metal metal;
-    metal.Albedo = albedo;
-    metal.FuzzFactor = fuzz_factor;
-
-    Material material;
-    material.Type = MaterialType::METAL;
-    material.M = metal;
-    return material;
-}
-
-Material CreateDielectric(f32 refractive_index)
-{
-    Dielectric dielectric;
-    dielectric.RefractiveIndex = refractive_index;
-
-    Material material;
-    material.Type = MaterialType::DIELECTRIC;
-    material.D = dielectric;
-    return material;
-}
 
 inline Vec3 Reflect(Vec3 v, Vec3 normal)
 {
@@ -69,8 +34,9 @@ inline f32 Reflectance(f32 refractive_index, f32 cosine)
     return r0 + (1.0f - r0) * std::pow(1.0f - cosine, 5.0f);
 }
 
-ScatterPayload Scatter(const HitPayload &hit, Lambertian material)
+static ScatterPayload ScatterLambertian(const Material &material, const Ray &incoming_ray, const HitPayload &hit)
 {
+    (void)incoming_ray;
     ScatterPayload payload;
 
     Vec3 direction = Normalized(hit.Normal) + RandomUnitVector();
@@ -80,28 +46,30 @@ ScatterPayload Scatter(const HitPayload &hit, Lambertian material)
     }
 
     payload.Scattered = {hit.Position, Normalized(direction)};
-    payload.Attenuation = material.Albedo;
+    payload.Attenuation = material.L.Albedo;
     return payload;
 }
 
-ScatterPayload Scatter(Ray incoming_ray, const HitPayload &hit, Metal material)
+static ScatterPayload ScatterMetal(const Material &material, const Ray &incoming_ray, const HitPayload &hit)
 {
     ScatterPayload payload;
-    Vec3 fuzziness = material.FuzzFactor * RandomUnitVector();
+    const auto &metal = material.M;
+    Vec3 fuzziness = metal.FuzzFactor * RandomUnitVector();
     Vec3 direction = Reflect(incoming_ray.Direction, hit.Normal) + fuzziness;
     payload.Scattered = {hit.Position, Normalized(direction)};
-    payload.Attenuation = material.Albedo;
+    payload.Attenuation = metal.Albedo;
     payload.Absorbed = Dot(direction, hit.Normal) < 0.0f;
     return payload;
 }
 
-ScatterPayload Scatter(Ray incoming_ray, const HitPayload &hit, Dielectric material)
+static ScatterPayload ScatterDielectric(const Material &material, const Ray &incoming_ray, const HitPayload &hit)
 {
     ScatterPayload payload;
     payload.Attenuation = WHITE;
 
     Vec3 normal = hit.Normal;
-    f32 refractive_index = hit.FrontFacing ? (1.0f / material.RefractiveIndex) : material.RefractiveIndex;
+    f32 refractive_index = material.D.RefractiveIndex;
+    refractive_index = hit.FrontFacing ? (1.0f / refractive_index) : refractive_index;
 
     f32 cosine = std::clamp(Dot(-incoming_ray.Direction, normal), -1.0f, 1.0f);
 
@@ -115,19 +83,36 @@ ScatterPayload Scatter(Ray incoming_ray, const HitPayload &hit, Dielectric mater
     return payload;
 }
 
-ScatterPayload Scatter(Ray incoming_ray, const HitPayload &hit, Material material)
+Material CreateLambertian(Color albedo)
 {
-    switch (material.Type)
-    {
-    case MaterialType::LAMBERTIAN: {
-        return Scatter(hit, material.L);
-    }
-    case MaterialType::METAL: {
-        return Scatter(incoming_ray, hit, material.M);
-    }
-    case MaterialType::DIELECTRIC: {
-        return Scatter(incoming_ray, hit, material.D);
-    }
-    }
-    std::unreachable();
+    Lambertian lambertian;
+    lambertian.Albedo = albedo;
+
+    Material material;
+    material.L = lambertian;
+    material.Scatter = ScatterLambertian;
+    return material;
+}
+
+Material CreateMetal(Color albedo, f32 fuzz_factor)
+{
+    Metal metal;
+    metal.Albedo = albedo;
+    metal.FuzzFactor = fuzz_factor;
+
+    Material material;
+    material.M = metal;
+    material.Scatter = ScatterMetal;
+    return material;
+}
+
+Material CreateDielectric(f32 refractive_index)
+{
+    Dielectric dielectric;
+    dielectric.RefractiveIndex = refractive_index;
+
+    Material material;
+    material.D = dielectric;
+    material.Scatter = ScatterDielectric;
+    return material;
 }

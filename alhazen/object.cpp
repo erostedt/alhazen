@@ -3,24 +3,10 @@
 
 #include <cassert>
 #include <cmath>
-#include <utility>
 
-Object CreateSphere(Point3 center, f32 radius, u32 material_index)
+static f32 SphereHit(const Object &object, const Ray &r, Interval interval)
 {
-    Sphere sphere{center, radius};
-    Object obj;
-    obj.Type = ObjectType::SPHERE;
-    obj.S = sphere;
-    obj.MaterialIndex = material_index;
-
-    Point3 p = center - radius * ONE;
-    Point3 q = center + radius * ONE;
-    obj.BoundingBox = CreateBox(p, q);
-    return obj;
-}
-
-f32 HitSphere(const Sphere &sphere, const Ray &r, Interval interval)
-{
+    const Sphere &sphere = object.S;
     Vec3 oc = sphere.Center - r.Origin;
     f32 h = Dot(r.Direction, oc);
     f32 c = SquaredLength(oc) - sphere.Radius * sphere.Radius;
@@ -48,30 +34,23 @@ f32 HitSphere(const Sphere &sphere, const Ray &r, Interval interval)
     return miss;
 }
 
-f32 HitObject(const Object &obj, const Ray &r, Interval interval) noexcept
+inline Vec3 SphereNormal(const Object &object, const Point3 &hit) noexcept
 {
-    switch (obj.Type)
-    {
-    case ObjectType::SPHERE: {
-        return HitSphere(obj.S, r, interval);
-    }
-    }
-    std::unreachable();
-}
-
-inline Vec3 SphereNormal(Point3 hit, const Sphere &sphere) noexcept
-{
+    const Sphere &sphere = object.S;
     return (hit - sphere.Center) / sphere.Radius;
 }
 
-Vec3 ObjectNormal(Point3 hit, const Object &obj) noexcept
+Object CreateSphere(Point3 center, f32 radius, u32 material_index)
 {
+    Sphere sphere{center, radius};
+    Object obj;
+    obj.S = sphere;
+    obj.MaterialIndex = material_index;
 
-    switch (obj.Type)
-    {
-    case ObjectType::SPHERE: {
-        return SphereNormal(hit, obj.S);
-    }
-    }
-    std::unreachable();
+    Point3 p = center - radius * ONE;
+    Point3 q = center + radius * ONE;
+    obj.BoundingBox = CreateBox(p, q);
+    obj.Hit = SphereHit;
+    obj.Normal = SphereNormal;
+    return obj;
 }

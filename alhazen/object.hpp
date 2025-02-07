@@ -12,22 +12,20 @@ struct Sphere
     f32 Radius;
 };
 
-enum class ObjectType
-{
-    SPHERE
-};
+struct Object;
+typedef Vec3 (*NormalFunction)(const Object &obj, const Point3 &hit);
+typedef f32 (*HitFunction)(const Object &obj, const Ray &r, Interval interval);
 
 struct Object
 {
-    ObjectType Type;
-    u32 MaterialIndex;
+    HitFunction Hit;
+    NormalFunction Normal;
+
     Box BoundingBox;
+    u32 MaterialIndex;
     union {
         Sphere S;
     };
 };
 
 Object CreateSphere(Point3 center, f32 radius, u32 material_index);
-
-f32 HitObject(const Object &obj, const Ray &r, Interval interval) noexcept;
-Vec3 ObjectNormal(Point3 hit, const Object &obj) noexcept;
