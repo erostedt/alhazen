@@ -7,9 +7,11 @@ set(CMAKE_CXX_FLAGS
     "-Wall -pedantic -Wextra -Werror -Wshadow -Wsign-conversion -Wconversion -Wunreachable-code -g"
 )
 set(SRC_DIR ${PROJECT_SOURCE_DIR}/alhazen)
+set(THIRD_PARTY ${PROJECT_SOURCE_DIR}/third_party)
 set(EXAMPLES_PATH ${PROJECT_SOURCE_DIR}/examples)
 
 include_directories(${SRC_DIR})
+include_directories(${THIRD_PARTY})
 
 file(GLOB SRC_SOURCES ${SRC_DIR}/*.cpp)
 file(GLOB EXAMPLES ${EXAMPLES_PATH}/*)

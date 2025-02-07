@@ -42,6 +42,20 @@ inline Vec3 SphereNormal(const Object &object, const Point3 &hit, f32 time) noex
     return (hit - sphere.CenterAt(time)) / sphere.Radius;
 }
 
+inline UV SphereUV(const Object &obj, const Vec3 &normal)
+{
+    (void)obj;
+    UV uv;
+
+    constexpr f32 pi = std::numbers::pi_v<f32>;
+    f32 theta = std::acos(-normal.Y);
+    f32 phi = std::atan2(-normal.Z, normal.X) + pi;
+
+    uv.U = phi / (2 * pi);
+    uv.V = theta / pi;
+    return uv;
+}
+
 Object CreateStationarySpere(Point3 center, f32 radius, u32 material_index)
 {
     Sphere sphere = {center, center, radius};
@@ -53,6 +67,7 @@ Object CreateStationarySpere(Point3 center, f32 radius, u32 material_index)
     obj.BoundingBox = CreateBox(center - delta, center + delta);
     obj.Hit = SphereHit;
     obj.Normal = SphereNormal;
+    obj.UV = SphereUV;
     return obj;
 }
 
@@ -69,5 +84,6 @@ Object CreateMovingSphere(Point3 start_center, Point3 end_center, f32 radius, u3
     obj.BoundingBox = Expand(start_box, end_box);
     obj.Hit = SphereHit;
     obj.Normal = SphereNormal;
+    obj.UV = SphereUV;
     return obj;
 }

@@ -1,8 +1,20 @@
 #include "image.hpp"
 
 #include <algorithm>
+#include <iostream>
 
 #include "color.hpp"
+
+#define STB_IMAGE_IMPLEMENTATION
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wall" // Disable warnings
+#pragma GCC diagnostic ignored "-Wextra"
+#pragma GCC diagnostic ignored "-Wpedantic"
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+#pragma GCC diagnostic ignored "-Wshadow"
+#pragma GCC diagnostic ignored "-Wconversion"
+#include "stb_image.h"
+#pragma GCC diagnostic pop
 
 FloatImage CreateFloatImage(u32 width, u32 height)
 {
@@ -10,6 +22,27 @@ FloatImage CreateFloatImage(u32 width, u32 height)
     image.Width = width;
     image.Height = height;
     image.Pixels = new Color[width * height]();
+    return image;
+}
+
+FloatImage LoadFloatImage(const char *path)
+{
+    i32 width, height, channels_in_file;
+    stbi_set_flip_vertically_on_load(true);
+    u8 *data = stbi_load(path, &width, &height, &channels_in_file, STBI_rgb);
+
+    assert(data != nullptr);
+
+    FloatImage image = CreateFloatImage((u32)width, (u32)height);
+    for (u32 i = 0; i < image.Width * image.Height; ++i)
+    {
+        u32 offset = i * 3;
+        image.Pixels[i].Red = (f32)data[offset + 0] / 255.0f;
+        image.Pixels[i].Green = (f32)data[offset + 1] / 255.0f;
+        image.Pixels[i].Blue = (f32)data[offset + 2] / 255.0f;
+    }
+
+    stbi_image_free(data);
     return image;
 }
 

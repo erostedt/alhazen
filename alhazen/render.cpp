@@ -73,6 +73,7 @@ static HitPayload TraceRayBVH(const BVH &bvh, const Ray &r, Interval interval)
     {
         payload.Normal = -payload.Normal;
     }
+    payload.UVCoordinates = obj.UV(obj, payload.Normal);
     return payload;
 }
 

@@ -50,7 +50,7 @@ static ScatterPayload ScatterLambertian(const Material &material, const Ray &inc
 
     payload.Scattered = {hit.Position, Normalized(direction), incoming_ray.Time};
     const Texture &texture = material.Lambertian.Tex;
-    payload.Attenuation = texture.Sample(texture, hit.U, hit.V, hit.Position);
+    payload.Attenuation = texture.Sample(texture, hit.UVCoordinates, hit.Position);
     return payload;
 }
 

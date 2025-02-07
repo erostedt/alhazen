@@ -1,6 +1,8 @@
 #pragma once
 
 #include "color.hpp"
+#include "image.hpp"
+#include "object.hpp"
 #include "point3.hpp"
 
 struct Texture;
@@ -21,13 +23,14 @@ struct CheckerTexture
 
 }; // namespace TextureTypes
 
-typedef Color (*SampleTexture)(const Texture &texture, f32 u, f32 v, const Point3 &p);
+typedef Color (*SampleTexture)(const Texture &texture, UV uv, const Point3 &hit);
 
 struct Texture
 {
     union {
         TextureTypes::SolidColor SolidColor;
         TextureTypes::CheckerTexture CheckerTexture;
+        FloatImage Image;
     };
 
     SampleTexture Sample;
@@ -35,3 +38,4 @@ struct Texture
 
 Texture CreateSolidColor(Color albedo);
 Texture CreateCheckerTexture(f32 scale, const Color &even_color, const Color &odd_color);
+Texture CreateImageTexture(const FloatImage &image);
