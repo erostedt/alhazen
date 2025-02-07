@@ -47,7 +47,7 @@ static ScatterPayload ScatterLambertian(const Material &material, const Ray &inc
         direction = hit.Normal;
     }
 
-    payload.Scattered = {hit.Position, Normalized(direction)};
+    payload.Scattered = {hit.Position, Normalized(direction), incoming_ray.Time};
     payload.Attenuation = material.Lambertian.Albedo;
     return payload;
 }
@@ -58,7 +58,7 @@ static ScatterPayload ScatterMetal(const Material &material, const Ray &incoming
     const Metal &metal = material.Metal;
     Vec3 fuzziness = metal.FuzzFactor * RandomUnitVector();
     Vec3 direction = Reflect(incoming_ray.Direction, hit.Normal) + fuzziness;
-    payload.Scattered = {hit.Position, Normalized(direction)};
+    payload.Scattered = {hit.Position, Normalized(direction), incoming_ray.Time};
     payload.Attenuation = metal.Albedo;
     payload.Absorbed = Dot(direction, hit.Normal) < 0.0f;
     return payload;
@@ -81,7 +81,7 @@ static ScatterPayload ScatterDielectric(const Material &material, const Ray &inc
     Vec3 direction = should_reflect ? Reflect(incoming_ray.Direction, normal)
                                     : Refract(cosine, incoming_ray.Direction, normal, refractive_index);
 
-    payload.Scattered = Ray{hit.Position, Normalized(direction)};
+    payload.Scattered = {hit.Position, Normalized(direction), incoming_ray.Time};
     return payload;
 }
 

@@ -8,6 +8,7 @@ struct Ray
 {
     Point3 Origin;
     Vec3 Direction;
+    f32 Time;
 
     inline Point3 At(f32 t) const noexcept
     {

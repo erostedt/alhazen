@@ -3,6 +3,7 @@
 #include <cmath>
 #include <numbers>
 
+#include "random.hpp"
 #include "vec3.hpp"
 
 Ray Camera::GenerateRay(f32 x, f32 y) const noexcept
@@ -10,7 +11,8 @@ Ray Camera::GenerateRay(f32 x, f32 y) const noexcept
     const Point3 pixel_center = PixelTopLeft + (x * PixelDeltaU) + (y * PixelDeltaV);
     const Point3 ray_origin = (DefocusDiskAngle <= 0) ? Position : SampleDefocusDisk();
     const Vec3 ray_direction = pixel_center - ray_origin;
-    return {ray_origin, Normalized(ray_direction)};
+    f32 time = UniformF32();
+    return {ray_origin, Normalized(ray_direction), time};
 }
 
 struct Viewport

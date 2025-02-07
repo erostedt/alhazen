@@ -67,7 +67,7 @@ static HitPayload TraceRayBVH(const BVH &bvh, const Ray &r, Interval interval)
     payload.Distance = interval.UpperBound;
     payload.ObjectIndex = closest_object_index;
     payload.Position = r.At(interval.UpperBound);
-    payload.Normal = obj.Normal(obj, payload.Position);
+    payload.Normal = obj.Normal(obj, payload.Position, r.Time);
     payload.FrontFacing = FrontFacing(r, payload.Normal);
     if (!payload.FrontFacing)
     {

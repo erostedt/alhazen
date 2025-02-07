@@ -35,16 +35,18 @@ int main()
                 continue;
             }
 
-            objects.push_back(CreateStationarySpere(center, 0.2f, (u32)materials.size()));
             if (choose_mat < 0.8f)
             {
                 // diffuse
+                Point3 end_center = center + Vec3(0, UniformF32(0.0f, 0.5f), 0);
+                objects.push_back(CreateMovingSphere(center, end_center, 0.2f, (u32)materials.size()));
                 Color albedo = RandomColor() * RandomColor();
                 materials.push_back(CreateLambertian(albedo));
             }
             else if (choose_mat < 0.95f)
             {
                 // metal
+                objects.push_back(CreateStationarySpere(center, 0.2f, (u32)materials.size()));
                 Color albedo = RandomColor(0.5f, 1.0f);
                 f32 fuzz = UniformF32(0.0f, 0.5f);
                 materials.push_back(CreateMetal(albedo, fuzz));
@@ -52,6 +54,7 @@ int main()
             else
             {
                 // glass
+                objects.push_back(CreateStationarySpere(center, 0.2f, (u32)materials.size()));
                 materials.push_back(CreateDielectric(1.5f));
             }
         }
@@ -70,14 +73,14 @@ int main()
     const Scene scene = {std::move(materials), std::move(bvh)};
 
     CameraProperties props;
-    props.ImageWidth = 1200;
+    props.ImageWidth = 400;
     props.VFOVDegrees = 20.0f;
     props.DefocusAngleDegrees = 0.6f;
     props.FocusDistance = 10.0f;
 
     const Camera camera = CreateCamera({13.0f, 2.0f, 3.0f}, ORIGIN, UP, props);
-    const u32 rays_per_pixel = 10;
-    const u32 max_bounces = 20;
+    const u32 rays_per_pixel = 100;
+    const u32 max_bounces = 50;
     auto image = RenderImage(camera, scene, rays_per_pixel, max_bounces);
     WriteFloatImageToPPM(std::cout, image);
 }
