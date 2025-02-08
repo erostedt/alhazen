@@ -13,10 +13,16 @@ static u32 PCGHash(u32 input)
 
 static u32 s_Seed = 0u;
 
-inline f32 UniformF32()
+inline u32 UniformU32()
 {
     s_Seed = PCGHash(s_Seed);
-    return (f32)s_Seed / (f32)std::numeric_limits<u32>::max();
+    return s_Seed;
+}
+
+inline f32 UniformF32()
+{
+    u32 value = UniformU32();
+    return (f32)value / (f32)std::numeric_limits<u32>::max();
 }
 
 inline f32 UniformF32(f32 min, f32 max)

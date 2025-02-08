@@ -1,5 +1,7 @@
 
 #include "texture.hpp"
+#include "color.hpp"
+#include "perlin.hpp"
 #include <algorithm>
 
 using namespace TextureTypes;
@@ -37,6 +39,12 @@ static Color SampleImageTexture(const Texture &texture, UV uv, const Point3 &hit
     return texture.Image[i, j];
 }
 
+static Color SampleNoiseTexture(const Texture &texture, UV uv, const Point3 &hit) noexcept
+{
+    (void)uv;
+    return WHITE * SamplePerlinNoise(texture.NoiseTexture.Noise, hit);
+}
+
 Texture CreateSolidColor(Color albedo)
 {
     TextureTypes::SolidColor solid_color = {albedo};
@@ -60,5 +68,16 @@ Texture CreateImageTexture(const FloatImage &image)
     Texture texture;
     texture.Image = image;
     texture.Sample = SampleImageTexture;
+    return texture;
+}
+
+Texture CreateNoiseTexture(const PerlinNoise &noise)
+{
+    NoiseTexture noise_texture;
+    noise_texture.Noise = noise;
+
+    Texture texture;
+    texture.NoiseTexture = noise_texture;
+    texture.Sample = SampleNoiseTexture;
     return texture;
 }
