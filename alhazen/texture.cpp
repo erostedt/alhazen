@@ -42,7 +42,11 @@ static Color SampleImageTexture(const Texture &texture, UV uv, const Point3 &hit
 static Color SampleNoiseTexture(const Texture &texture, UV uv, const Point3 &hit) noexcept
 {
     (void)uv;
-    return WHITE * SamplePerlinNoise(texture.NoiseTexture.Noise, hit * texture.NoiseTexture.Scale);
+    const PerlinNoise &noise = texture.NoiseTexture.Noise;
+    f32 scale = texture.NoiseTexture.Scale;
+    Point3 sample_point = hit * scale;
+
+    return WHITE * 0.5f * (1.0f + std::sin(scale * hit.Z + 10.0f * SampleTurbulence(noise, sample_point, 7)));
 }
 
 Texture CreateSolidColor(Color albedo)

@@ -30,4 +30,12 @@ inline Point3 operator*(Point3 p, f32 s)
     return {p.X * s, p.Y * s, p.Z * s};
 }
 
+inline Point3 &operator*=(Point3 &p, f32 s)
+{
+    p.X *= s;
+    p.Y *= s;
+    p.Z *= s;
+    return p;
+}
+
 const Point3 ORIGIN = {0.0f, 0.0f, 0.0f};
