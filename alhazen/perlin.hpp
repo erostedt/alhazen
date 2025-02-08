@@ -54,22 +54,26 @@ inline f32 SamplePerlinNoise(const PerlinNoise &noise, const Point3 &point)
     i32 y = (i32)std::floor(point.Y);
     i32 z = (i32)std::floor(point.Z);
 
-    f32 frac_x = point.X - std::floor(point.X);
-    f32 frac_y = point.Y - std::floor(point.Y);
-    f32 frac_z = point.Z - std::floor(point.Z);
+    f32 u = point.X - std::floor(point.X);
+    f32 v = point.Y - std::floor(point.Y);
+    f32 w = point.Z - std::floor(point.Z);
+
+    u = u * u * (3.0f - 2.0f * u);
+    v = v * v * (3.0f - 2.0f * v);
+    w = w * w * (3.0f - 2.0f * w);
 
     f32 accum = 0.0f;
     for (i32 dx = 0; dx < 2; ++dx)
     {
-        f32 x_contrib = (f32)dx * frac_x + (1.0f - (f32)dx) * (1.0f - frac_x);
+        f32 x_contrib = (f32)dx * u + (1.0f - (f32)dx) * (1.0f - u);
         i32 x_value = noise.Perm_X[(x + dx) & 255];
         for (i32 dy = 0; dy < 2; ++dy)
         {
-            f32 y_contrib = (f32)dy * frac_y + (1.0f - (f32)dy) * (1.0f - frac_y);
+            f32 y_contrib = (f32)dy * v + (1.0f - (f32)dy) * (1.0f - v);
             i32 y_value = noise.Perm_Y[(y + dy) & 255];
             for (i32 dz = 0; dz < 2; ++dz)
             {
-                f32 z_contrib = (f32)dz * frac_z + (1.0f - (f32)dz) * (1.0f - frac_z);
+                f32 z_contrib = (f32)dz * w + (1.0f - (f32)dz) * (1.0f - w);
                 i32 z_value = noise.Perm_Z[(z + dz) & 255];
 
                 f32 value = noise.Values[x_value ^ y_value ^ z_value];

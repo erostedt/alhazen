@@ -15,7 +15,7 @@
 
 int main()
 {
-    Texture noise_texture = CreateNoiseTexture(CreatePerlinNoise());
+    Texture noise_texture = CreateNoiseTexture(CreatePerlinNoise(), 4.0f);
     Material material = CreateLambertian(noise_texture);
 
     std::vector<Material> materials = {material};

@@ -25,6 +25,7 @@ struct CheckerTexture
 struct NoiseTexture
 {
     PerlinNoise Noise;
+    f32 Scale;
 };
 
 }; // namespace TextureTypes
@@ -46,4 +47,4 @@ struct Texture
 Texture CreateSolidColor(Color albedo);
 Texture CreateCheckerTexture(f32 scale, const Color &even_color, const Color &odd_color);
 Texture CreateImageTexture(const FloatImage &image);
-Texture CreateNoiseTexture(const PerlinNoise &image);
+Texture CreateNoiseTexture(const PerlinNoise &noise, f32 scale);

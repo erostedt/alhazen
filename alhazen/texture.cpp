@@ -42,7 +42,7 @@ static Color SampleImageTexture(const Texture &texture, UV uv, const Point3 &hit
 static Color SampleNoiseTexture(const Texture &texture, UV uv, const Point3 &hit) noexcept
 {
     (void)uv;
-    return WHITE * SamplePerlinNoise(texture.NoiseTexture.Noise, hit);
+    return WHITE * SamplePerlinNoise(texture.NoiseTexture.Noise, hit * texture.NoiseTexture.Scale);
 }
 
 Texture CreateSolidColor(Color albedo)
@@ -71,10 +71,11 @@ Texture CreateImageTexture(const FloatImage &image)
     return texture;
 }
 
-Texture CreateNoiseTexture(const PerlinNoise &noise)
+Texture CreateNoiseTexture(const PerlinNoise &noise, f32 scale)
 {
     NoiseTexture noise_texture;
     noise_texture.Noise = noise;
+    noise_texture.Scale = scale;
 
     Texture texture;
     texture.NoiseTexture = noise_texture;
