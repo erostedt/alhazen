@@ -87,3 +87,65 @@ Object CreateMovingSphere(Point3 start_center, Point3 end_center, f32 radius, u3
     obj.UV = SphereUV;
     return obj;
 }
+
+/*
+static f32 QuadHit(const Object &object, const Ray &r, Interval interval)
+{
+    const Quad &quad = object.Quad;
+    f32 denom = Dot(quad.Normal, r.Direction);
+
+    const f32 miss = -1.0f;
+    if (std::abs(denom) < 1e-8f)
+    {
+        return miss;
+    }
+
+    auto t = (quad.D - Dot(quad.Normal, ToVec3(r.Origin))) / denom;
+    if (!interval.Contains(t))
+    {
+        return miss;
+    }
+
+    Point3 intersection = r.At(t);
+    Vec3 test_point = intersection - quad.Anchor;
+    f32 alpha = Dot(quad.W, Cross(test_point, quad.V));
+    f32 beta = Dot(quad.W, Cross(quad.U, test_point));
+
+    bool outside = alpha < 0.0f || alpha > 1.0f || beta < 0.0f || beta > 1.0f;
+
+    if (outside)
+    {
+        return miss;
+    }
+    return t;
+}
+*/
+
+Object CreateQuad(Point3 anchor, Vec3 u, Vec3 v, u32 material_index)
+{
+
+    Quad quad;
+    quad.Anchor = anchor;
+    quad.U = u;
+    quad.V = v;
+
+    Vec3 n = Cross(u, v);
+    quad.Normal = Normalized(n);
+    quad.D = Dot(quad.Normal, ToVec3(quad.Anchor));
+    quad.W = n / SquaredLength(n);
+
+    Object obj;
+    obj.Quad = quad;
+    obj.MaterialIndex = material_index;
+
+    Box box_diag = CreateBox(anchor, anchor + u + v);
+    Box box_off_diag = CreateBox(anchor + u, anchor + v);
+
+    Box bounding_box = Expand(box_diag, box_off_diag);
+
+    f32 min_width = 0.0001f;
+    obj.BoundingBox = ExpandToAtleast(bounding_box, min_width);
+
+    // TODO: Implement HITFunction
+    return obj;
+}
