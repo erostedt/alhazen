@@ -45,12 +45,30 @@ inline Box CreateBox(Point3 p, Point3 q)
     return box;
 }
 
-inline Box Expand(const Box &b1, const Box &b2)
+inline Box Expand(const Box &b1, const Box &b2) noexcept
 {
     Box expanded;
     expanded.XAxis = Expand(b1.XAxis, b2.XAxis);
     expanded.YAxis = Expand(b1.YAxis, b2.YAxis);
     expanded.ZAxis = Expand(b1.ZAxis, b2.ZAxis);
+    return expanded;
+}
+
+inline Box ExpandToAtleast(const Box &b1, f32 minimum) noexcept
+{
+    Box expanded;
+    if (b1.XAxis.Width() < minimum)
+    {
+        expanded.XAxis = Expand(b1.XAxis, minimum);
+    }
+    if (b1.YAxis.Width() < minimum)
+    {
+        expanded.YAxis = Expand(b1.YAxis, minimum);
+    }
+    if (b1.ZAxis.Width() < minimum)
+    {
+        expanded.ZAxis = Expand(b1.ZAxis, minimum);
+    }
     return expanded;
 }
 

@@ -36,6 +36,18 @@ struct Sphere
     }
 };
 
+struct Quad
+{
+    Point3 Anchor;
+    Vec3 U;
+    Vec3 V;
+
+    Vec3 Normal;
+    f32 D;
+
+    Vec3 W;
+};
+
 }; // namespace ObjectTypes
 
 struct Object
@@ -48,8 +60,10 @@ struct Object
     u32 MaterialIndex;
     union {
         ObjectTypes::Sphere Sphere;
+        ObjectTypes::Quad Quad;
     };
 };
 
 Object CreateStationarySpere(Point3 center, f32 radius, u32 material_index);
 Object CreateMovingSphere(Point3 start_center, Point3 end_center, f32 radius, u32 material_index);
+Object CreateQuad(Point3 anchor, Vec3 u, Vec3 v, u32 material_index);
