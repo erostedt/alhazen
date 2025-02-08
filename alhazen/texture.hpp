@@ -2,9 +2,9 @@
 
 #include "color.hpp"
 #include "image.hpp"
-#include "object.hpp"
 #include "perlin.hpp"
 #include "point3.hpp"
+#include "uv.hpp"
 
 struct Texture;
 namespace TextureTypes

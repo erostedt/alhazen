@@ -25,8 +25,8 @@ static HitPayload TraceRayBVH(const BVH &bvh, const Ray &r, Interval interval)
     stack.reserve(bvh.Objects.size());
     stack.push_back(0);
 
-    i32 closest_object_index = -1;
-
+    HitPayload payload = {};
+    payload.ObjectIndex = -1;
     while (!stack.empty())
     {
         u32 node_index = stack.back();
@@ -42,11 +42,10 @@ static HitPayload TraceRayBVH(const BVH &bvh, const Ray &r, Interval interval)
         if (node.IsLeaf())
         {
             const Object &obj = bvh.Objects[(sz)node.ObjectIndex()];
-            f32 hit = obj.Hit(obj, r, interval);
-            if (interval.Surrounds(hit))
+            if (obj.Hit(obj, r, interval, payload))
             {
-                closest_object_index = (i32)node.ObjectIndex();
-                interval.UpperBound = hit;
+                payload.ObjectIndex = (i32)node.ObjectIndex();
+                interval.UpperBound = payload.Distance;
             }
             continue;
         }
@@ -54,26 +53,6 @@ static HitPayload TraceRayBVH(const BVH &bvh, const Ray &r, Interval interval)
         stack.push_back(node.Left);
         stack.push_back(node.Right);
     }
-
-    HitPayload payload;
-    if (closest_object_index < 0)
-    {
-        payload.ObjectIndex = -1;
-        return payload;
-    }
-
-    const Object &obj = bvh.Objects[(sz)closest_object_index];
-
-    payload.Distance = interval.UpperBound;
-    payload.ObjectIndex = closest_object_index;
-    payload.Position = r.At(interval.UpperBound);
-    payload.Normal = obj.Normal(obj, payload.Position, r.Time);
-    payload.FrontFacing = FrontFacing(r, payload.Normal);
-    if (!payload.FrontFacing)
-    {
-        payload.Normal = -payload.Normal;
-    }
-    payload.UVCoordinates = obj.UV(obj, payload.Normal);
     return payload;
 }
 

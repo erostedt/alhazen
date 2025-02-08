@@ -1,8 +1,8 @@
 #pragma once
 
-#include "object.hpp"
 #include "point3.hpp"
 #include "types.hpp"
+#include "uv.hpp"
 #include "vec3.hpp"
 
 struct HitPayload

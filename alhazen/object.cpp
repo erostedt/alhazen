@@ -1,50 +1,19 @@
 #include "object.hpp"
 #include "box.hpp"
+#include "hit_payload.hpp"
 
 #include <cassert>
 #include <cmath>
 
 using namespace ObjectTypes;
 
-static f32 SphereHit(const Object &object, const Ray &r, Interval interval)
+inline Vec3 SphereNormal(const Sphere &sphere, const Point3 &hit, f32 time) noexcept
 {
-    const Sphere &sphere = object.Sphere;
-    Vec3 oc = sphere.CenterAt(r.Time) - r.Origin;
-    f32 h = Dot(r.Direction, oc);
-    f32 c = SquaredLength(oc) - sphere.Radius * sphere.Radius;
-    f32 discriminant = h * h - c;
-
-    f32 miss = -1.0f;
-    if (discriminant < 0.0f)
-    {
-        return miss;
-    }
-
-    f32 square_root_of_discriminant = std::sqrt(discriminant);
-    f32 closest_hit = h - square_root_of_discriminant;
-    if (interval.Surrounds(closest_hit))
-    {
-        return closest_hit;
-    }
-
-    f32 further_hit = h + square_root_of_discriminant;
-    if (interval.Surrounds(further_hit))
-    {
-        return further_hit;
-    }
-
-    return miss;
-}
-
-inline Vec3 SphereNormal(const Object &object, const Point3 &hit, f32 time) noexcept
-{
-    const Sphere &sphere = object.Sphere;
     return (hit - sphere.CenterAt(time)) / sphere.Radius;
 }
 
-inline UV SphereUV(const Object &obj, const Vec3 &normal)
+inline UV SphereUV(const Vec3 &normal)
 {
-    (void)obj;
     UV uv;
 
     constexpr f32 pi = std::numbers::pi_v<f32>;
@@ -54,6 +23,50 @@ inline UV SphereUV(const Object &obj, const Vec3 &normal)
     uv.U = phi / (2 * pi);
     uv.V = theta / pi;
     return uv;
+}
+
+static void FillSphereHitPayload(const Sphere &sphere, f32 distance, const Ray &ray, HitPayload &payload)
+{
+    payload.Distance = distance;
+    payload.Position = ray.At(distance);
+    payload.Normal = SphereNormal(sphere, payload.Position, ray.Time);
+    payload.FrontFacing = FrontFacing(ray, payload.Normal);
+    if (!payload.FrontFacing)
+    {
+        payload.Normal = -payload.Normal;
+    }
+    payload.UVCoordinates = SphereUV(payload.Normal);
+}
+
+static bool SphereHit(const Object &object, const Ray &ray, Interval interval, HitPayload &payload)
+{
+    const Sphere &sphere = object.Sphere;
+    Vec3 oc = sphere.CenterAt(ray.Time) - ray.Origin;
+    f32 h = Dot(ray.Direction, oc);
+    f32 c = SquaredLength(oc) - sphere.Radius * sphere.Radius;
+    f32 discriminant = h * h - c;
+
+    if (discriminant < 0.0f)
+    {
+        return false;
+    }
+
+    f32 square_root_of_discriminant = std::sqrt(discriminant);
+    f32 closest_hit = h - square_root_of_discriminant;
+    if (interval.Surrounds(closest_hit))
+    {
+        FillSphereHitPayload(sphere, closest_hit, ray, payload);
+        return true;
+    }
+
+    f32 further_hit = h + square_root_of_discriminant;
+    if (interval.Surrounds(further_hit))
+    {
+        FillSphereHitPayload(sphere, further_hit, ray, payload);
+        return true;
+    }
+
+    return false;
 }
 
 Object CreateStationarySpere(Point3 center, f32 radius, u32 material_index)
@@ -66,8 +79,6 @@ Object CreateStationarySpere(Point3 center, f32 radius, u32 material_index)
     Vec3 delta = radius * ONE;
     obj.BoundingBox = CreateBox(center - delta, center + delta);
     obj.Hit = SphereHit;
-    obj.Normal = SphereNormal;
-    obj.UV = SphereUV;
     return obj;
 }
 
@@ -83,8 +94,6 @@ Object CreateMovingSphere(Point3 start_center, Point3 end_center, f32 radius, u3
     Box end_box = CreateBox(end_center - delta, end_center + delta);
     obj.BoundingBox = Expand(start_box, end_box);
     obj.Hit = SphereHit;
-    obj.Normal = SphereNormal;
-    obj.UV = SphereUV;
     return obj;
 }
 

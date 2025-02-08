@@ -1,21 +1,14 @@
 #pragma once
 
 #include "box.hpp"
+#include "hit_payload.hpp"
 #include "interval.hpp"
 #include "point3.hpp"
 #include "ray.hpp"
 #include "types.hpp"
 
-struct UV
-{
-    f32 U;
-    f32 V;
-};
-
 struct Object;
-typedef Vec3 (*NormalFunction)(const Object &obj, const Point3 &hit, f32 time);
-typedef f32 (*HitFunction)(const Object &obj, const Ray &r, Interval interval);
-typedef UV (*UVFunction)(const Object &obj, const Vec3 &normal);
+typedef bool (*HitFunction)(const Object &obj, const Ray &r, Interval interval, HitPayload &payload);
 
 inline Point3 Lerp(Point3 a, Point3 b, f32 t) noexcept
 {
@@ -53,8 +46,6 @@ struct Quad
 struct Object
 {
     HitFunction Hit;
-    NormalFunction Normal;
-    UVFunction UV;
 
     Box BoundingBox;
     u32 MaterialIndex;
