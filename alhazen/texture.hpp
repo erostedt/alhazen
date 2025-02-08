@@ -30,7 +30,7 @@ struct NoiseTexture
 
 }; // namespace TextureTypes
 
-typedef Color (*SampleTexture)(const Texture &texture, UV uv, const Point3 &hit);
+typedef Color (*SampleTexture)(const Texture &texture, UV uv, const Point3 &sample_point);
 
 struct Texture
 {

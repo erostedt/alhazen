@@ -6,30 +6,30 @@
 
 using namespace TextureTypes;
 
-static Color SampleSolidColor(const Texture &texture, UV uv, const Point3 &hit) noexcept
+static Color SampleSolidColor(const Texture &texture, UV uv, const Point3 &sample_point) noexcept
 {
     (void)uv;
-    (void)hit;
+    (void)sample_point;
     return texture.SolidColor.Albedo;
 }
 
-static Color SampleCheckerTexture(const Texture &texture, UV uv, const Point3 &hit) noexcept
+static Color SampleCheckerTexture(const Texture &texture, UV uv, const Point3 &sample_point) noexcept
 {
     (void)uv;
     CheckerTexture checker_texture = texture.CheckerTexture;
     f32 inv_scale = checker_texture.InverseScale;
-    i32 x = (i32)(inv_scale * hit.X);
-    i32 y = (i32)(inv_scale * hit.Y);
-    i32 z = (i32)(inv_scale * hit.Z);
+    i32 x = (i32)(inv_scale * sample_point.X);
+    i32 y = (i32)(inv_scale * sample_point.Y);
+    i32 z = (i32)(inv_scale * sample_point.Z);
 
     bool is_even = (x + y + z) % 2 == 0;
 
     return is_even ? checker_texture.EvenColor : checker_texture.OddColor;
 }
 
-static Color SampleImageTexture(const Texture &texture, UV uv, const Point3 &hit) noexcept
+static Color SampleImageTexture(const Texture &texture, UV uv, const Point3 &sample_point) noexcept
 {
-    (void)hit;
+    (void)sample_point;
     f32 u = std::clamp(uv.U, 0.0f, 1.0f);
     f32 v = std::clamp(uv.V, 0.0f, 1.0f);
 
@@ -39,14 +39,13 @@ static Color SampleImageTexture(const Texture &texture, UV uv, const Point3 &hit
     return texture.Image[i, j];
 }
 
-static Color SampleNoiseTexture(const Texture &texture, UV uv, const Point3 &hit) noexcept
+static Color SampleNoiseTexture(const Texture &texture, UV uv, const Point3 &sample_point) noexcept
 {
     (void)uv;
     const PerlinNoise &noise = texture.NoiseTexture.Noise;
     f32 scale = texture.NoiseTexture.Scale;
-    Point3 sample_point = hit * scale;
 
-    return WHITE * 0.5f * (1.0f + std::sin(scale * hit.Z + 10.0f * SampleTurbulence(noise, sample_point, 7)));
+    return WHITE * 0.5f * (1.0f + std::sin(scale * sample_point.Z + 10.0f * SampleTurbulence(noise, sample_point, 7)));
 }
 
 Texture CreateSolidColor(Color albedo)
