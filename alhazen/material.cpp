@@ -61,8 +61,7 @@ static ScatterPayload ScatterMetal(const Material &material, const Ray &incoming
     Vec3 fuzziness = metal.FuzzFactor * RandomUnitVector();
     Vec3 direction = Reflect(incoming_ray.Direction, hit.Normal) + fuzziness;
     payload.Scattered = {hit.Position, Normalized(direction), incoming_ray.Time};
-    payload.Attenuation = metal.Albedo;
-    payload.Absorbed = Dot(direction, hit.Normal) < 0.0f;
+    payload.Attenuation = (Dot(direction, hit.Normal) < 0.0f) ? BLACK : metal.Albedo;
     return payload;
 }
 

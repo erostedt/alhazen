@@ -9,7 +9,7 @@ struct ScatterPayload
 {
     Ray Scattered;
     Color Attenuation;
-    bool Absorbed = false;
+    Color Emitted = BLACK;
 };
 
 struct Material;
@@ -46,6 +46,5 @@ struct Material
 
 Material CreateLambertian(const Texture &texture);
 Material CreateLambertian(Color albedo);
-
 Material CreateMetal(Color albedo, f32 fuzz_factor);
 Material CreateDielectric(f32 refractive_index);

@@ -68,5 +68,11 @@ inline Color RandomColor(f32 min, f32 max)
     return {UniformF32(min, max), UniformF32(min, max), UniformF32(min, max)};
 }
 
+inline bool AlmostEquals(Color c1, Color c2, f32 tolerance = 1e-6f)
+{
+    return std::abs(c1.Red - c2.Red) < tolerance && std::abs(c1.Green - c2.Green) < tolerance &&
+           std::abs(c1.Blue - c2.Blue) < tolerance;
+}
+
 const Color BLACK = {0.0f, 0.0f, 0.0f};
 const Color WHITE = {1.0f, 1.0f, 1.0f};

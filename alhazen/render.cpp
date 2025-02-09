@@ -76,10 +76,12 @@ static Color RayColor(Ray r, const Scene &scene, u32 max_bounces)
         const Material &material = scene.Materials[material_index];
         const ScatterFunction &Scatter = material.Scatter;
         ScatterPayload scatter = Scatter(material, r, hit);
-        if (scatter.Absorbed)
+
+        if (AlmostEquals(scatter.Attenuation, BLACK))
         {
             return BLACK;
         }
+
         color = color * scatter.Attenuation;
         r = scatter.Scattered;
         --max_bounces;
