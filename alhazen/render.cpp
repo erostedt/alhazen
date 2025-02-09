@@ -66,11 +66,7 @@ static Color RayColor(Ray r, const Scene &scene, u32 max_bounces)
         const HitPayload hit = TraceRayBVH(scene.Bvh, r, interval);
         if (hit.ObjectIndex < 0)
         {
-            Vec3 v = r.Direction;
-            f32 a = 0.5f * (v.Y + 1.0f);
-            Color light_blue = {0.5f, 0.7f, 1.0f};
-            Color white = {1.0f, 1.0f, 1.0f};
-            return accumulated + throughput * LinearBlend(light_blue, white, a);
+            return accumulated + throughput * scene.Background;
         }
 
         u32 material_index = scene.Bvh.Objects[(sz)hit.ObjectIndex].MaterialIndex;

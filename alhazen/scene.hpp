@@ -9,4 +9,5 @@ struct Scene
 {
     std::vector<Material> Materials;
     BVH Bvh;
+    Color Background = {0.70f, 0.80f, 1.00f};
 };
