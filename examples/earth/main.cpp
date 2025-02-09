@@ -14,7 +14,7 @@
 int main()
 {
 
-    Texture texture = CreateImageTexture(LoadFloatImage("../images/earthmap.jpg"));
+    Texture texture = CreateImageTexture(LoadFloatImage("./images/earthmap.jpg"));
     Material material = CreateLambertian(texture);
 
     std::vector<Material> materials = {material};
