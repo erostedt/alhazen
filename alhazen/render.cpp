@@ -58,7 +58,8 @@ static HitPayload TraceRayBVH(const BVH &bvh, const Ray &r, Interval interval)
 
 static Color RayColor(Ray r, const Scene &scene, u32 max_bounces)
 {
-    Color color = WHITE;
+    Color accumulated = BLACK;
+    Color throughput = WHITE;
     while (max_bounces > 0)
     {
         Interval interval = {0.001f, std::numeric_limits<f32>::infinity()};
@@ -69,7 +70,7 @@ static Color RayColor(Ray r, const Scene &scene, u32 max_bounces)
             f32 a = 0.5f * (v.Y + 1.0f);
             Color light_blue = {0.5f, 0.7f, 1.0f};
             Color white = {1.0f, 1.0f, 1.0f};
-            return color * LinearBlend(light_blue, white, a);
+            return accumulated + throughput * LinearBlend(light_blue, white, a);
         }
 
         u32 material_index = scene.Bvh.Objects[(sz)hit.ObjectIndex].MaterialIndex;
@@ -79,10 +80,11 @@ static Color RayColor(Ray r, const Scene &scene, u32 max_bounces)
 
         if (AlmostEquals(scatter.Attenuation, BLACK))
         {
-            return BLACK;
+            return accumulated + throughput * scatter.Emitted;
         }
 
-        color = color * scatter.Attenuation;
+        accumulated += throughput * scatter.Emitted;
+        throughput *= scatter.Attenuation;
         r = scatter.Scattered;
         --max_bounces;
     }

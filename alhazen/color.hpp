@@ -17,6 +17,14 @@ struct Color
         Blue += rhs.Blue;
         return *this;
     }
+
+    inline Color &operator*=(const Color &rhs) noexcept
+    {
+        Red *= rhs.Red;
+        Green *= rhs.Green;
+        Blue *= rhs.Blue;
+        return *this;
+    }
 };
 
 inline Color operator+(Color c1, Color c2) noexcept
