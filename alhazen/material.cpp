@@ -86,6 +86,15 @@ static ScatterPayload ScatterDielectric(const Material &material, const Ray &inc
     return payload;
 }
 
+static ScatterPayload ScatterDiffuseLighting(const Material &material, const Ray &incoming_ray, const HitPayload &hit)
+{
+    (void)incoming_ray;
+    ScatterPayload payload;
+    const Texture &texture = material.Lambertian.Tex;
+    payload.Emitted = texture.Sample(texture, hit.UVCoordinates, hit.Position);
+    return payload;
+}
+
 Material CreateLambertian(const Texture &texture)
 {
     Lambertian lambertian;
@@ -122,5 +131,16 @@ Material CreateDielectric(f32 refractive_index)
     Material material;
     material.Dielectric = dielectric;
     material.Scatter = ScatterDielectric;
+    return material;
+}
+
+Material CreateDiffuseLighting(Color albedo)
+{
+    DiffuseLight ligth;
+    ligth.Tex = CreateSolidColor(albedo);
+
+    Material material;
+    material.DiffuseLight = ligth;
+    material.Scatter = ScatterDiffuseLighting;
     return material;
 }

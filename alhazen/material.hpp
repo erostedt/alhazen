@@ -8,7 +8,7 @@
 struct ScatterPayload
 {
     Ray Scattered;
-    Color Attenuation;
+    Color Attenuation = BLACK;
     Color Emitted = BLACK;
 };
 
@@ -32,6 +32,12 @@ struct Dielectric
 {
     f32 RefractiveIndex;
 };
+
+struct DiffuseLight
+{
+    Texture Tex;
+};
+
 } // namespace MaterialTypes
 
 struct Material
@@ -40,6 +46,7 @@ struct Material
         MaterialTypes::Lambertian Lambertian;
         MaterialTypes::Metal Metal;
         MaterialTypes::Dielectric Dielectric;
+        MaterialTypes::DiffuseLight DiffuseLight;
     };
     ScatterFunction Scatter;
 };
@@ -48,3 +55,4 @@ Material CreateLambertian(const Texture &texture);
 Material CreateLambertian(Color albedo);
 Material CreateMetal(Color albedo, f32 fuzz_factor);
 Material CreateDielectric(f32 refractive_index);
+Material CreateDiffuseLighting(Color albedo);

@@ -8,3 +8,4 @@ time ./build/earth >outputs/earth.ppm
 time ./build/perlin_spheres >outputs/perlin_spheres.ppm
 time ./build/quads >outputs/quads.ppm
 time ./build/raytracing_in_a_weekend >outputs/raytracing_in_a_weekend.ppm
+time ./build/simple_light >outputs/simple_light.ppm
