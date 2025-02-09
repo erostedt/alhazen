@@ -1,6 +1,7 @@
 #include "object.hpp"
 #include "box.hpp"
 #include "hit_payload.hpp"
+#include "vec3.hpp"
 
 #include <cassert>
 #include <cmath>
@@ -69,6 +70,50 @@ static bool SphereHit(const Object &object, const Ray &ray, Interval interval, H
     return false;
 }
 
+static bool QuadHit(const Object &object, const Ray &ray, Interval interval, HitPayload &payload)
+{
+    const Quad &quad = object.Quad;
+    f32 denom = Dot(quad.Normal, ray.Direction);
+
+    if (std::abs(denom) < 1e-6f)
+    {
+        return false;
+    }
+
+    f32 t = (quad.D - Dot(quad.Normal, ToVec3(ray.Origin))) / denom;
+
+    if (!interval.Contains(t))
+    {
+        return false;
+    }
+
+    Point3 intersection = ray.At(t);
+
+    Vec3 test_point = intersection - quad.Anchor;
+
+    f32 alpha = Dot(test_point, quad.U) / SquaredLength(quad.U);
+    f32 beta = Dot(test_point, quad.V) / SquaredLength(quad.V);
+
+    bool outside = alpha < 0.0f || alpha > 1.0f || beta < 0.0f || beta > 1.0f;
+
+    if (outside)
+    {
+        return false;
+    }
+
+    payload.Distance = t;
+    payload.Position = intersection;
+    payload.Normal = quad.Normal;
+    payload.FrontFacing = FrontFacing(ray, payload.Normal);
+    if (!payload.FrontFacing)
+    {
+        payload.Normal = -payload.Normal;
+    }
+    payload.UVCoordinates = {alpha, beta};
+
+    return true;
+}
+
 Object CreateStationarySpere(Point3 center, f32 radius, u32 material_index)
 {
     Sphere sphere = {center, center, radius};
@@ -97,39 +142,6 @@ Object CreateMovingSphere(Point3 start_center, Point3 end_center, f32 radius, u3
     return obj;
 }
 
-/*
-static f32 QuadHit(const Object &object, const Ray &r, Interval interval)
-{
-    const Quad &quad = object.Quad;
-    f32 denom = Dot(quad.Normal, r.Direction);
-
-    const f32 miss = -1.0f;
-    if (std::abs(denom) < 1e-8f)
-    {
-        return miss;
-    }
-
-    auto t = (quad.D - Dot(quad.Normal, ToVec3(r.Origin))) / denom;
-    if (!interval.Contains(t))
-    {
-        return miss;
-    }
-
-    Point3 intersection = r.At(t);
-    Vec3 test_point = intersection - quad.Anchor;
-    f32 alpha = Dot(quad.W, Cross(test_point, quad.V));
-    f32 beta = Dot(quad.W, Cross(quad.U, test_point));
-
-    bool outside = alpha < 0.0f || alpha > 1.0f || beta < 0.0f || beta > 1.0f;
-
-    if (outside)
-    {
-        return miss;
-    }
-    return t;
-}
-*/
-
 Object CreateQuad(Point3 anchor, Vec3 u, Vec3 v, u32 material_index)
 {
 
@@ -141,7 +153,6 @@ Object CreateQuad(Point3 anchor, Vec3 u, Vec3 v, u32 material_index)
     Vec3 n = Cross(u, v);
     quad.Normal = Normalized(n);
     quad.D = Dot(quad.Normal, ToVec3(quad.Anchor));
-    quad.W = n / SquaredLength(n);
 
     Object obj;
     obj.Quad = quad;
@@ -154,7 +165,7 @@ Object CreateQuad(Point3 anchor, Vec3 u, Vec3 v, u32 material_index)
 
     f32 min_width = 0.0001f;
     obj.BoundingBox = ExpandToAtleast(bounding_box, min_width);
+    obj.Hit = QuadHit;
 
-    // TODO: Implement HITFunction
     return obj;
 }

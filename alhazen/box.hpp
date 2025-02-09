@@ -54,20 +54,23 @@ inline Box Expand(const Box &b1, const Box &b2) noexcept
     return expanded;
 }
 
-inline Box ExpandToAtleast(const Box &b1, f32 minimum) noexcept
+inline Box ExpandToAtleast(const Box &b, f32 minimum) noexcept
 {
-    Box expanded;
-    if (b1.XAxis.Width() < minimum)
+    Box expanded = b;
+    if (b.XAxis.Width() < minimum)
     {
-        expanded.XAxis = Expand(b1.XAxis, minimum);
+        f32 delta = minimum - b.XAxis.Width();
+        expanded.XAxis = Expand(b.XAxis, delta);
     }
-    if (b1.YAxis.Width() < minimum)
+    if (b.YAxis.Width() < minimum)
     {
-        expanded.YAxis = Expand(b1.YAxis, minimum);
+        f32 delta = minimum - b.YAxis.Width();
+        expanded.YAxis = Expand(b.YAxis, delta);
     }
-    if (b1.ZAxis.Width() < minimum)
+    if (b.ZAxis.Width() < minimum)
     {
-        expanded.ZAxis = Expand(b1.ZAxis, minimum);
+        f32 delta = minimum - b.ZAxis.Width();
+        expanded.ZAxis = Expand(b.ZAxis, delta);
     }
     return expanded;
 }

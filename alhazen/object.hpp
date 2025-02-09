@@ -37,8 +37,6 @@ struct Quad
 
     Vec3 Normal;
     f32 D;
-
-    Vec3 W;
 };
 
 }; // namespace ObjectTypes

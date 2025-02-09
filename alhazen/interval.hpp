@@ -56,7 +56,7 @@ inline Interval Expand(Interval i1, Interval i2) noexcept
 inline Interval Expand(Interval i, f32 delta)
 {
     f32 padding = 0.5f * delta;
-    return Interval(i.LowerBound - padding, i.UpperBound + padding);
+    return {i.LowerBound - padding, i.UpperBound + padding};
 }
 
 inline Interval Overlap(Interval i1, Interval i2)
