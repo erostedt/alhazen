@@ -113,5 +113,6 @@ FloatImage RenderImage(const Camera &camera, const Scene &scene, u32 rays_per_pi
             image[x, y] = c / (f32)rays_per_pixel;
         }
     }
+    std::clog << "\rDone rendering image." << ' ' << std::flush;
     return image;
 }
