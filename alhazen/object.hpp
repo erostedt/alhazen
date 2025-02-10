@@ -20,12 +20,12 @@ namespace ObjectTypes
 
 struct Sphere
 {
-    Point3 StartCenter;
-    Point3 EndCenter;
+    Point3 LocalStartPosition;
+    Point3 LocalEndPosition;
     f32 Radius;
-    inline Point3 CenterAt(f32 time) const noexcept
+    inline Point3 LocalPositionAt(f32 time) const noexcept
     {
-        return Lerp(StartCenter, EndCenter, time);
+        return Lerp(LocalStartPosition, LocalStartPosition, time);
     }
 };
 
@@ -47,6 +47,7 @@ struct Object
 
     Box BoundingBox;
     u32 MaterialIndex;
+    Point3 Position;
     union {
         ObjectTypes::Sphere Sphere;
         ObjectTypes::Quad Quad;

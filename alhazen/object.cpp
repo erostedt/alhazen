@@ -10,7 +10,7 @@ using namespace ObjectTypes;
 
 inline Vec3 SphereNormal(const Sphere &sphere, const Point3 &hit, f32 time) noexcept
 {
-    return (hit - sphere.CenterAt(time)) / sphere.Radius;
+    return (hit - sphere.LocalPositionAt(time)) / sphere.Radius;
 }
 
 inline UV SphereUV(const Vec3 &normal)
@@ -42,7 +42,7 @@ static void FillSphereHitPayload(const Sphere &sphere, f32 distance, const Ray &
 static bool SphereHit(const Object &object, const Ray &ray, Interval interval, HitPayload &payload)
 {
     const Sphere &sphere = object.Sphere;
-    Vec3 oc = sphere.CenterAt(ray.Time) - ray.Origin;
+    Vec3 oc = sphere.LocalPositionAt(ray.Time) - ray.Origin;
     f32 h = Dot(ray.Direction, oc);
     f32 c = SquaredLength(oc) - sphere.Radius * sphere.Radius;
     f32 discriminant = h * h - c;
