@@ -43,6 +43,14 @@ struct Interval
         interval.UpperBound = -std::numeric_limits<f32>::infinity();
         return interval;
     }
+
+    inline static Interval Universe() noexcept
+    {
+        Interval interval;
+        interval.LowerBound = -std::numeric_limits<f32>::infinity();
+        interval.UpperBound = +std::numeric_limits<f32>::infinity();
+        return interval;
+    }
 };
 
 inline Interval Expand(Interval i1, Interval i2) noexcept
