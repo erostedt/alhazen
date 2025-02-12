@@ -1,8 +1,8 @@
 #include "camera.hpp"
 
 #include <cmath>
-#include <numbers>
 
+#include "quaternion.hpp"
 #include "random.hpp"
 #include "vec3.hpp"
 
@@ -20,11 +20,6 @@ struct Viewport
     f32 Width;
     f32 Height;
 };
-
-inline f32 Radians(f32 degrees)
-{
-    return degrees * std::numbers::pi_v<f32> / 180.0f;
-}
 
 static Viewport CalculateViewport(f32 vfov_degrees, f32 focus_distance, f32 aspect_ratio)
 {
