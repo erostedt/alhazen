@@ -21,11 +21,11 @@ int main()
     std::vector<Material> materials = {left_red, back_green, right_blue, upper_orange, lower_teal};
 
     std::vector<Object> objects = {
-        CreateQuad({-3.0f, -2.0f, 5.0f}, {0.0f, 0.0f, -4.0f}, {0.0f, 4.0f, 0.0f}, 0),
-        CreateQuad({-2.0f, -2.0f, 0.0f}, {4.0f, 0.0f, 0.0f}, {0.0f, 4.0f, 0.0f}, 1),
-        CreateQuad({3.0f, -2.0f, 1.0f}, {0.0f, 0.0f, 4.0f}, {0.0f, 4.0f, 0.0f}, 2),
-        CreateQuad({-2.0f, 3.0f, 1.0f}, {4.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 4.0f}, 3),
-        CreateQuad({-2.0f, -3.0f, 5.0f}, {4.0f, 0.0f, 0.0f}, {0.0f, 0.0f, -4.0f}, 4),
+        CreateQuad({-3.0f, 0.0f, 3.0f}, {0.0f, 0.0f, -4.0f}, {0.0f, 4.0f, 0.0f}, 0),
+        CreateQuad({0.0f, 0.0f, 0.0f}, {4.0f, 0.0f, 0.0f}, {0.0f, 4.0f, 0.0f}, 1),
+        CreateQuad({3.0f, 0.0f, 3.0f}, {0.0f, 0.0f, 4.0f}, {0.0f, 4.0f, 0.0f}, 2),
+        CreateQuad({0.0f, 3.0f, 3.0f}, {4.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 4.0f}, 3),
+        CreateQuad({0.0f, -3.0f, 3.0f}, {4.0f, 0.0f, 0.0f}, {0.0f, 0.0f, -4.0f}, 4),
     };
 
     const auto bvh = CreateBVH(std::move(objects));

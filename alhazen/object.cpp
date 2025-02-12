@@ -94,7 +94,7 @@ static bool QuadHit(const Object &object, const Ray &ray, Interval interval, Hit
     f32 alpha = Dot(test_point, quad.U) / SquaredLength(quad.U);
     f32 beta = Dot(test_point, quad.V) / SquaredLength(quad.V);
 
-    bool outside = alpha < 0.0f || alpha > 1.0f || beta < 0.0f || beta > 1.0f;
+    bool outside = std::abs(alpha) > 0.5f || std::abs(beta) > 0.5f;
 
     if (outside)
     {
@@ -109,7 +109,7 @@ static bool QuadHit(const Object &object, const Ray &ray, Interval interval, Hit
     {
         payload.Normal = -payload.Normal;
     }
-    payload.UVCoordinates = {alpha, beta};
+    payload.UVCoordinates = {alpha + 0.5f, beta + 0.5f};
 
     return true;
 }
@@ -142,11 +142,10 @@ Object CreateMovingSphere(Point3 start_center, Point3 end_center, f32 radius, u3
     return obj;
 }
 
-Object CreateQuad(Point3 anchor, Vec3 u, Vec3 v, u32 material_index)
+Object CreateQuad(Point3 center, Vec3 u, Vec3 v, u32 material_index)
 {
-
     Quad quad;
-    quad.Anchor = anchor;
+    quad.Anchor = center;
     quad.U = u;
     quad.V = v;
 
@@ -158,13 +157,23 @@ Object CreateQuad(Point3 anchor, Vec3 u, Vec3 v, u32 material_index)
     obj.Quad = quad;
     obj.MaterialIndex = material_index;
 
-    Box box_diag = CreateBox(anchor, anchor + u + v);
-    Box box_off_diag = CreateBox(anchor + u, anchor + v);
+    Point3 p0 = center - 0.5f * u - 0.5f * v;
+    Point3 p1 = center + 0.5f * u - 0.5f * v;
+    Point3 p2 = center + 0.5f * u + 0.5f * v;
+    Point3 p3 = center - 0.5f * u + 0.5f * v;
 
-    Box bounding_box = Expand(box_diag, box_off_diag);
+    f32 xmin = std::min(std::min(std::min(p0.X, p1.X), p2.X), p3.X);
+    f32 ymin = std::min(std::min(std::min(p0.Y, p1.Y), p2.Y), p3.Y);
+    f32 zmin = std::min(std::min(std::min(p0.Z, p1.Z), p2.Z), p3.Z);
+
+    f32 xmax = std::max(std::max(std::max(p0.X, p1.X), p2.X), p3.X);
+    f32 ymax = std::max(std::max(std::max(p0.Y, p1.Y), p2.Y), p3.Y);
+    f32 zmax = std::max(std::max(std::max(p0.Z, p1.Z), p2.Z), p3.Z);
+
+    Box box = CreateBox({xmin, ymin, zmin}, {xmax, ymax, zmax});
 
     f32 min_width = 0.0001f;
-    obj.BoundingBox = ExpandToAtleast(bounding_box, min_width);
+    obj.BoundingBox = ExpandToAtleast(box, min_width);
     obj.Hit = QuadHit;
 
     return obj;
