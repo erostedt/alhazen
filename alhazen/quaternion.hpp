@@ -27,10 +27,10 @@ inline Quaternion operator*(const Quaternion &q1, const Quaternion &q2)
     return {w, x, y, z};
 }
 
-inline Quaternion CreateFromAxisAngle(Vec3 axis, float angle)
+inline Quaternion CreateFromAxisAngle(Vec3 axis, float degrees)
 {
     axis = Normalized(axis);
-    f32 rad = Radians(angle);
+    f32 rad = Radians(degrees);
     f32 half_sin = std::sin(0.5f * rad);
     f32 half_cos = std::cos(0.5f * rad);
     return {half_cos, axis.X * half_sin, axis.Y * half_sin, axis.Z * half_sin};
@@ -48,3 +48,5 @@ inline Point3 RotateAround(const Quaternion &q, const Point3 &point, const Point
 {
     return pivot + Rotate(q, point - pivot);
 }
+
+const Quaternion IDENTITY = {1.0f, 0.0f, 0.0f, 0.0f};
