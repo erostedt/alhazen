@@ -1,16 +1,19 @@
 #include "object.hpp"
 #include "box.hpp"
 #include "hit_payload.hpp"
+#include "interval.hpp"
+#include "random.hpp"
 #include "vec3.hpp"
 
 #include <cassert>
 #include <cmath>
+#include <limits>
 
 using namespace ObjectTypes;
 
 inline Vec3 SphereNormal(const Sphere &sphere, const Point3 &hit, f32 time) noexcept
 {
-    return (hit - sphere.LocalPositionAt(time)) / sphere.Radius;
+    return (hit - sphere.PositionAt(time)) / sphere.Radius;
 }
 
 inline UV SphereUV(const Vec3 &normal)
@@ -42,7 +45,7 @@ static void FillSphereHitPayload(const Sphere &sphere, f32 distance, const Ray &
 static bool SphereHit(const Object &object, const Ray &ray, Interval interval, HitPayload &payload)
 {
     const Sphere &sphere = object.Sphere;
-    Vec3 oc = sphere.LocalPositionAt(ray.Time) - ray.Origin;
+    Vec3 oc = sphere.PositionAt(ray.Time) - ray.Origin;
     f32 h = Dot(ray.Direction, oc);
     f32 c = SquaredLength(oc) - sphere.Radius * sphere.Radius;
     f32 discriminant = h * h - c;
@@ -114,6 +117,47 @@ static bool QuadHit(const Object &object, const Ray &ray, Interval interval, Hit
     return true;
 }
 
+static bool ConstantMediumHit(const Object &object, const Ray &ray, Interval interval, HitPayload &payload)
+{
+    HitPayload payload1, payload2;
+
+    Object *boundary = object.ConstantMedium.Boundary;
+    if (!boundary->Hit(*boundary, ray, Interval::Universe(), payload1))
+    {
+        return false;
+    }
+
+    if (!boundary->Hit(*boundary, ray, {payload1.Distance + 0.0001f, std::numeric_limits<f32>::infinity()}, payload2))
+    {
+        return false;
+    }
+
+    payload1.Distance = std::max(payload1.Distance, interval.LowerBound);
+    payload2.Distance = std::min(payload2.Distance, interval.UpperBound);
+
+    if (payload1.Distance >= payload2.Distance)
+    {
+        return false;
+    }
+
+    payload1.Distance = std::max(payload1.Distance, 0.0f);
+
+    f32 distance_inside_boundary = payload2.Distance - payload1.Distance;
+    auto hit_distance = object.ConstantMedium.NegativeInverseDensity * std::log(UniformF32());
+
+    if (hit_distance > distance_inside_boundary)
+    {
+        return false;
+    }
+
+    payload.Distance = payload1.Distance + hit_distance;
+    payload.Position = ray.At(payload.Distance);
+    payload.Normal = RIGHT;
+    payload.FrontFacing = true;
+    payload.UVCoordinates = {0.0f, 0.0f};
+    return true;
+}
+
 Object CreateStationarySpere(Point3 center, f32 radius, u32 material_index)
 {
     Sphere sphere = {center, center, radius};
@@ -176,5 +220,18 @@ Object CreateQuad(Point3 center, Vec3 u, Vec3 v, u32 material_index)
     obj.BoundingBox = ExpandToAtleast(box, min_width);
     obj.Hit = QuadHit;
 
+    return obj;
+}
+
+Object CreateConstantMedium(Object *object, f32 density, u32 material_index)
+{
+    ConstantMedium medium;
+    medium.Boundary = object;
+    medium.NegativeInverseDensity = -1.0f / density;
+    Object obj;
+    obj.ConstantMedium = medium;
+    obj.MaterialIndex = material_index;
+    obj.BoundingBox = object->BoundingBox;
+    obj.Hit = ConstantMediumHit;
     return obj;
 }

@@ -20,12 +20,12 @@ namespace ObjectTypes
 
 struct Sphere
 {
-    Point3 LocalStartPosition;
-    Point3 LocalEndPosition;
+    Point3 StartCenter;
+    Point3 EndCenter;
     f32 Radius;
-    inline Point3 LocalPositionAt(f32 time) const noexcept
+    inline Point3 PositionAt(f32 time) const noexcept
     {
-        return Lerp(LocalStartPosition, LocalStartPosition, time);
+        return Lerp(StartCenter, EndCenter, time);
     }
 };
 
@@ -39,6 +39,12 @@ struct Quad
     f32 D;
 };
 
+struct ConstantMedium
+{
+    Object *Boundary;
+    f32 NegativeInverseDensity;
+};
+
 }; // namespace ObjectTypes
 
 struct Object
@@ -47,13 +53,14 @@ struct Object
 
     Box BoundingBox;
     u32 MaterialIndex;
-    Point3 Position;
     union {
         ObjectTypes::Sphere Sphere;
         ObjectTypes::Quad Quad;
+        ObjectTypes::ConstantMedium ConstantMedium;
     };
 };
 
 Object CreateStationarySpere(Point3 center, f32 radius, u32 material_index);
 Object CreateMovingSphere(Point3 start_center, Point3 end_center, f32 radius, u32 material_index);
 Object CreateQuad(Point3 anchor, Vec3 u, Vec3 v, u32 material_index);
+Object CreateConstantMedium(Object *object, f32 density, u32 material_index);
