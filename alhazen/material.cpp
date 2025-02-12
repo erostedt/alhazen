@@ -95,6 +95,15 @@ static ScatterPayload ScatterDiffuseLighting(const Material &material, const Ray
     return payload;
 }
 
+static ScatterPayload ScatterIsotropic(const Material &material, const Ray &incoming_ray, const HitPayload &hit)
+{
+    ScatterPayload payload;
+    payload.Scattered = {hit.Position, RandomUnitVector(), incoming_ray.Time};
+    const Texture &texture = material.Lambertian.Tex;
+    payload.Attenuation = texture.Sample(texture, hit.UVCoordinates, hit.Position);
+    return payload;
+}
+
 Material CreateLambertian(const Texture &texture)
 {
     Lambertian lambertian;
@@ -142,5 +151,16 @@ Material CreateDiffuseLighting(Color albedo)
     Material material;
     material.DiffuseLight = ligth;
     material.Scatter = ScatterDiffuseLighting;
+    return material;
+}
+
+Material CreateIsotropic(Color albedo)
+{
+    Isotropic isotropic;
+    isotropic.Tex = CreateSolidColor(albedo);
+
+    Material material;
+    material.Isotropic = isotropic;
+    material.Scatter = ScatterIsotropic;
     return material;
 }

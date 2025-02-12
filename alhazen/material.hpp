@@ -38,6 +38,11 @@ struct DiffuseLight
     Texture Tex;
 };
 
+struct Isotropic
+{
+    Texture Tex;
+};
+
 } // namespace MaterialTypes
 
 struct Material
@@ -47,6 +52,7 @@ struct Material
         MaterialTypes::Metal Metal;
         MaterialTypes::Dielectric Dielectric;
         MaterialTypes::DiffuseLight DiffuseLight;
+        MaterialTypes::Isotropic Isotropic;
     };
     ScatterFunction Scatter;
 };
@@ -56,3 +62,4 @@ Material CreateLambertian(Color albedo);
 Material CreateMetal(Color albedo, f32 fuzz_factor);
 Material CreateDielectric(f32 refractive_index);
 Material CreateDiffuseLighting(Color albedo);
+Material CreateIsotropic(Color albedo);
