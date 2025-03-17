@@ -36,22 +36,6 @@ static std::vector<Object> CreateBox(const Point3 &p, const Point3 &q, const Qua
 
     Point3 center = min + 0.5f * (max - min);
 
-    /*
-    Point3 front_r = center + hdz;
-    Point3 back_g = center - hdz;
-    Point3 left_b = center - hdx;
-    Point3 right_y = center + hdx;
-    Point3 top_m = center + hdy;
-    Point3 bottom_c = center - hdy;
-
-    front_r = center + Rotate(rotation, front_r - center);
-    back_g = center + Rotate(rotation, back_g - center);
-    left_b = center + Rotate(rotation, left_b - center);
-    right_y = center + Rotate(rotation, right_y - center);
-    top_m = center + Rotate(rotation, top_m - center);
-    bottom_c = center + Rotate(rotation, bottom_c - center);
-    */
-
     Point3 front = center + Rotate(rotation, hdz);
     Point3 back = center + Rotate(rotation, -hdz);
     Point3 left = center + Rotate(rotation, -hdx);
