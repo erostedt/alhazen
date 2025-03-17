@@ -1,9 +1,10 @@
 #pragma once
 
+#include <algorithm>
+
 #include "interval.hpp"
 #include "point3.hpp"
 #include "ray.hpp"
-#include <algorithm>
 
 struct Box
 {

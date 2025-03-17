@@ -1,13 +1,14 @@
 #include "object.hpp"
+
+#include <cassert>
+#include <cmath>
+#include <limits>
+
 #include "box.hpp"
 #include "hit_payload.hpp"
 #include "interval.hpp"
 #include "random.hpp"
 #include "vec3.hpp"
-
-#include <cassert>
-#include <cmath>
-#include <limits>
 
 using namespace ObjectTypes;
 

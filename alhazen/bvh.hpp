@@ -1,10 +1,12 @@
 #pragma once
 
 #include "box.hpp"
-#include "object.hpp"
-#include "types.hpp"
+
 #include <algorithm>
 #include <vector>
+
+#include "object.hpp"
+#include "types.hpp"
 
 struct BVHNode
 {

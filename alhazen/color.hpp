@@ -1,8 +1,9 @@
 #pragma once
 
+#include <cmath>
+
 #include "random.hpp"
 #include "types.hpp"
-#include <cmath>
 
 struct Color
 {

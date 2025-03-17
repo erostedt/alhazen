@@ -1,8 +1,9 @@
-
 #include "texture.hpp"
+
+#include <algorithm>
+
 #include "color.hpp"
 #include "perlin.hpp"
-#include <algorithm>
 
 using namespace TextureTypes;
 
