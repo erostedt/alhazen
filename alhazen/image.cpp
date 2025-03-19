@@ -1,7 +1,9 @@
 #include "image.hpp"
 
 #include <algorithm>
+#include <cassert>
 #include <filesystem>
+#include <fstream>
 #include <iostream>
 
 #include "color.hpp"
@@ -30,22 +32,33 @@ FloatImage CreateFloatImage(u32 width, u32 height)
 
 FloatImage LoadFloatImage(const fs::path &path)
 {
-    i32 width, height, channels_in_file;
-    stbi_set_flip_vertically_on_load(true);
-    u8 *data = stbi_load(path.c_str(), &width, &height, &channels_in_file, STBI_rgb);
+    assert(path.extension() == "ppm" && "Only ppm P3 files supported");
+    std::ifstream file(path);
+    std::string type;
+    file >> type;
+    assert(type == "P3" && "Only ppm P3 files supported");
+    u32 width, height;
+    i32 max_value;
+    file >> width;
+    file >> height;
+    file >> max_value;
 
-    assert(data != nullptr);
+    assert(width > 0 && "Image has no width");
+    assert(height > 0 && "Image has no height");
+    assert(max_value == 255 && "Expected u8 image");
 
-    FloatImage image = CreateFloatImage((u32)width, (u32)height);
+    FloatImage image = CreateFloatImage(width, height);
+    f32 r, g, b;
+
     for (u32 i = 0; i < image.Width * image.Height; ++i)
     {
-        u32 offset = i * 3;
-        image.Pixels[i].Red = (f32)data[offset + 0] / 255.0f;
-        image.Pixels[i].Green = (f32)data[offset + 1] / 255.0f;
-        image.Pixels[i].Blue = (f32)data[offset + 2] / 255.0f;
+        file >> r;
+        file >> g;
+        file >> b;
+        image.Pixels[i].Red = r / 255.0f;
+        image.Pixels[i].Green = g / 255.0f;
+        image.Pixels[i].Blue = b / 255.0f;
     }
-
-    stbi_image_free(data);
     return image;
 }
 

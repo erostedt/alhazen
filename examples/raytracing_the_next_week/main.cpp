@@ -73,7 +73,7 @@ int main()
     materials.push_back(CreateIsotropic(WHITE));
 
     objects.push_back(CreateStationarySpere({400.0f, 200.0f, 400.0f}, 100.0f, (u32)materials.size()));
-    Texture texture = CreateImageTexture(LoadFloatImage("./images/earthmap.jpg"));
+    Texture texture = CreateImageTexture(LoadFloatImage("./images/earthmap.ppm"));
     materials.push_back(CreateLambertian(texture));
 
     objects.push_back(CreateStationarySpere({220.0f, 280.0f, 300.0f}, 80.0f, (u32)materials.size()));
