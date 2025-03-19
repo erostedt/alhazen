@@ -8,17 +8,6 @@
 
 #include "color.hpp"
 
-#define STB_IMAGE_IMPLEMENTATION
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wall" // Disable warnings
-#pragma GCC diagnostic ignored "-Wextra"
-#pragma GCC diagnostic ignored "-Wpedantic"
-#pragma GCC diagnostic ignored "-Wsign-conversion"
-#pragma GCC diagnostic ignored "-Wshadow"
-#pragma GCC diagnostic ignored "-Wconversion"
-#include "stb_image.h"
-#pragma GCC diagnostic pop
-
 namespace fs = std::filesystem;
 
 FloatImage CreateFloatImage(u32 width, u32 height)
