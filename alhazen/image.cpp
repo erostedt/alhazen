@@ -1,6 +1,7 @@
 #include "image.hpp"
 
 #include <algorithm>
+#include <filesystem>
 #include <iostream>
 
 #include "color.hpp"
@@ -16,6 +17,8 @@
 #include "stb_image.h"
 #pragma GCC diagnostic pop
 
+namespace fs = std::filesystem;
+
 FloatImage CreateFloatImage(u32 width, u32 height)
 {
     FloatImage image;
@@ -25,11 +28,11 @@ FloatImage CreateFloatImage(u32 width, u32 height)
     return image;
 }
 
-FloatImage LoadFloatImage(const char *path)
+FloatImage LoadFloatImage(const fs::path &path)
 {
     i32 width, height, channels_in_file;
     stbi_set_flip_vertically_on_load(true);
-    u8 *data = stbi_load(path, &width, &height, &channels_in_file, STBI_rgb);
+    u8 *data = stbi_load(path.c_str(), &width, &height, &channels_in_file, STBI_rgb);
 
     assert(data != nullptr);
 

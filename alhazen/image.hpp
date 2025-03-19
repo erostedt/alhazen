@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <ostream>
 
 #include "color.hpp"
@@ -23,6 +24,6 @@ struct FloatImage
 };
 
 FloatImage CreateFloatImage(u32 width, u32 height);
-FloatImage LoadFloatImage(const char *path);
+FloatImage LoadFloatImage(const std::filesystem::path &path);
 void FreeFloatImage(FloatImage *image);
 void WriteFloatImageToPPM(std::ostream &dst, FloatImage image);
