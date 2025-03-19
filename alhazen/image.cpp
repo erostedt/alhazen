@@ -23,30 +23,38 @@ FloatImage LoadFloatImage(const fs::path &path)
 {
     assert(path.extension() == "ppm" && "Only ppm P3 files supported");
     std::ifstream file(path);
+
     std::string type;
     file >> type;
     assert(type == "P3" && "Only ppm P3 files supported");
-    u32 width, height;
-    i32 max_value;
-    file >> width;
-    file >> height;
-    file >> max_value;
 
+    i32 width;
+    file >> width;
     assert(width > 0 && "Image has no width");
+
+    i32 height;
+    file >> height;
     assert(height > 0 && "Image has no height");
+
+    i32 max_value;
+    file >> max_value;
     assert(max_value == 255 && "Expected u8 image");
 
-    FloatImage image = CreateFloatImage(width, height);
+    FloatImage image = CreateFloatImage((u32)width, (u32)height);
     f32 r, g, b;
 
-    for (u32 i = 0; i < image.Width * image.Height; ++i)
+    for (i32 y = height - 1; y >= 0; --y)
     {
-        file >> r;
-        file >> g;
-        file >> b;
-        image.Pixels[i].Red = r / 255.0f;
-        image.Pixels[i].Green = g / 255.0f;
-        image.Pixels[i].Blue = b / 255.0f;
+        for (i32 x = 0; x < width; ++x)
+        {
+            i32 i = y * width + x;
+            file >> r;
+            file >> g;
+            file >> b;
+            image.Pixels[i].Red = r / 255.0f;
+            image.Pixels[i].Green = g / 255.0f;
+            image.Pixels[i].Blue = b / 255.0f;
+        }
     }
     return image;
 }
