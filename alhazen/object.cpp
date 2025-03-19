@@ -3,10 +3,12 @@
 #include <cassert>
 #include <cmath>
 #include <limits>
+#include <vector>
 
 #include "box.hpp"
 #include "hit_payload.hpp"
 #include "interval.hpp"
+#include "quaternion.hpp"
 #include "random.hpp"
 #include "vec3.hpp"
 
@@ -235,4 +237,41 @@ Object CreateConstantMedium(Object *object, f32 density, u32 material_index)
     obj.BoundingBox = object->BoundingBox;
     obj.Hit = ConstantMediumHit;
     return obj;
+}
+
+std::vector<Object> CreateBox(const Point3 &p, const Point3 &q, const Quaternion &rotation, u32 material_index)
+{
+    std::vector<Object> sides;
+    sides.reserve(6);
+
+    Point3 min = {std::min(p.X, q.X), std::min(p.Y, q.Y), std::min(p.Z, q.Z)};
+    Point3 max = {std::max(p.X, q.X), std::max(p.Y, q.Y), std::max(p.Z, q.Z)};
+
+    Vec3 dx = {max.X - min.X, 0, 0};
+    Vec3 dy = {0, max.Y - min.Y, 0};
+    Vec3 dz = {0, 0, max.Z - min.Z};
+
+    Vec3 rdx = Rotate(rotation, dx);
+    Vec3 rdy = Rotate(rotation, dy);
+    Vec3 rdz = Rotate(rotation, dz);
+
+    Vec3 hdx = 0.5f * dx;
+    Vec3 hdy = 0.5f * dy;
+    Vec3 hdz = 0.5f * dz;
+
+    Point3 center = min + 0.5f * (max - min);
+    Point3 front = center + Rotate(rotation, hdz);
+    Point3 back = center + Rotate(rotation, -hdz);
+    Point3 left = center + Rotate(rotation, -hdx);
+    Point3 right = center + Rotate(rotation, hdx);
+    Point3 top = center + Rotate(rotation, hdy);
+    Point3 bottom = center + Rotate(rotation, -hdy);
+
+    sides.push_back(CreateQuad(front, rdx, rdy, material_index));
+    sides.push_back(CreateQuad(back, -rdx, rdy, material_index));
+    sides.push_back(CreateQuad(left, rdz, rdy, material_index));
+    sides.push_back(CreateQuad(right, -rdz, rdy, material_index));
+    sides.push_back(CreateQuad(top, rdx, -rdz, material_index));
+    sides.push_back(CreateQuad(bottom, rdx, rdz, material_index));
+    return sides;
 }
